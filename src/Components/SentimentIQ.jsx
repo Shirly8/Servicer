@@ -35,7 +35,7 @@ function SentimentIQ() {
       setReviewsGenerated(true);
 
       //Get the metrics after generating the reviews
-      fetchMetrics();
+      // fetchMetrics();
 
     }catch (error){
       console.log("Error generating reviews: ", error)
@@ -90,8 +90,14 @@ function SentimentIQ() {
   return (
     <>
 
+<div className = "full">
     <h1 style = {{fontSize: "45px", textAlign: "center"}}> SentimentIQ</h1>
-    <p>SentimentIQ is a pre-trained link</p>
+    <p style= {{paddingLeft: "10%", paddingRight:"10%", fontSize: "13px"}}>
+      SentimentIQ, a powerful tool that offers businesses a sophisicated way to understand customer sentiment,
+      providing insights into how your customers feel about your products or services. 
+      By integrating NLP techniques, real-time analysis and robust evaluation metrics, 
+      SentimentIQ captures your customer reviews, continuously improving our model to provide you with the most accurate sentiment score possible.
+      </p>
     
       <div className = "halves">
         <div className = "half1">
@@ -112,7 +118,7 @@ function SentimentIQ() {
             <img src = {star} style = {{height: "2em"}}></img>
             </div>
           
-            <p style = {{fontSize: "12px"}}>{review.text}</p>
+            <p style = {{fontSize: "11px"}}>{review.text}</p>
           </div>
                     
           ))}
@@ -176,6 +182,7 @@ function SentimentIQ() {
         </div>
 
 
+    </div>
     </div>
     </>
   )

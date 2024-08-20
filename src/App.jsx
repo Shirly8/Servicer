@@ -35,9 +35,14 @@ function App() {
       case 'RecommendIQ':
         return <RecommendIQ/>
       default: 
-      return null;
+        return null;
     }
   }
+
+  //Handle Toggle Component Visibility:
+  const handleTabClick = (component) => {
+    setClickedComponent(prevComponent => prevComponent === component ? null : component);
+  };
 
   return (
     <div className = 'main'>
@@ -61,9 +66,9 @@ function App() {
 
     <div className = "components">
       <nav className='tabs' ref = {tabsRef}>
-        <button className = 'tabbutton' onClick = {()=> setClickedComponent('SentimentIQ')}>SentimentIQ</button>
-        <button className = 'tabbutton' onClick = {()=> setClickedComponent('QueryIQ')}>QueryIQ</button>
-        <button className = 'tabbutton' onClick = {()=> setClickedComponent('RecommendIQ')}>RecommendIQ</button>
+        <button className = 'tabbutton' onClick = {()=> handleTabClick('SentimentIQ')}>SentimentIQ</button>
+        <button className = 'tabbutton' onClick = {()=> handleTabClick('QueryIQ')}>QueryIQ</button>
+        <button className = 'tabbutton' onClick = {()=> handleTabClick('RecommendIQ')}>RecommendIQ</button>
       </nav>
     </div>
 
