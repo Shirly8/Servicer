@@ -1,6 +1,6 @@
 import React from 'react';
+import './Components.css'
 import { useState, useEffect } from 'react'
-import './Components.css';
 import star from '../images/star.png'
 import buffer from '../images/Buffer.png'
 
@@ -89,8 +89,7 @@ function SentimentIQ() {
 
   return (
     <>
-
-<div className = "full">
+    <div style = {{height: "100vh"}}>
     <h1 style = {{fontSize: "45px", textAlign: "center"}}> SentimentIQ</h1>
     <p style= {{paddingLeft: "10%", paddingRight:"10%", fontSize: "13px"}}>
       SentimentIQ, a powerful tool that offers businesses a sophisicated way to understand customer sentiment,
@@ -134,14 +133,14 @@ function SentimentIQ() {
         <div className = "half2">
           <h1 className = "miniheading">Enter Review</h1>
 
-          <textarea className = "reviewinput" 
+          <textarea className = "reviewinput" style = {{height: "125px"}}
           value = {reviewText}
           onChange = {(e) => setReviewText(e.target.value)}
           ></textarea>
-          <div className="send-icon" onClick = {analyzeSentiment}/>
+          <div className="send-icon" style = {{position: "relative", top: "-70px", left: "45%"}}onClick = {analyzeSentiment}/>
 
           {sentimentScore !=null && (
-          <div style = {{marginTop: '-15px'}}>
+          <div style = {{marginTop: '-40px'}}>
             <h3>Sentiment Score: </h3>
             <div className = "ratingtext2">
               <h1> {sentimentScore.toFixed(0)}</h1>
@@ -151,7 +150,7 @@ function SentimentIQ() {
           </div>
           )}
 
-{/* 
+
           {reviewGenerated && (
             <div className = "evaluatetable">
               <h2 className = "evaluateTitle" > Model Analysis </h2>
@@ -178,7 +177,7 @@ function SentimentIQ() {
             </div>
 
           )}
-         */}
+        
         </div>
 
 

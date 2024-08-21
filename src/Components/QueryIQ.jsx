@@ -4,6 +4,31 @@ import './QueryChat.css'
 
 
 function QueryIQ() {
+  const [prompt, setPrompt] = useState('')
+  const [response, setResponse] = useState('')
+
+
+
+  const sendPrompt = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch ('/Querychat', {
+        method: 'POST',
+        header: {
+        'Content-Type': 'application/json'
+      },
+        body: JSON.stringify({text: prompt})
+    });
+
+    const data = await response.json()
+    setResponse(prevResponse => [...prevResponse, {prompt, data: data}])
+    setPrompt('')
+
+  }catch (error){
+    console.log(error)
+  }
+  }
 
   return (
     <>
@@ -17,7 +42,10 @@ function QueryIQ() {
 
      <div className = "chat">
 
-     <input className = "inputText"></input>
+     <input 
+     className = "inputText"
+     value = {prompt}
+     ></input>
      <div className = "send-icon"></div>
 
 
