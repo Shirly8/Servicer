@@ -8,6 +8,14 @@ body, #root{
   width: 100vw;
   overflow: hidden;
   overflow-y: auto;
+  
+}
+
+.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
 }
 
 header{

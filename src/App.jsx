@@ -76,6 +76,10 @@ function App() {
         {renderComponent()}
     </div>
 
+    <div className = "centered">
+    <h1> Toronto's 3 Michelin Star</h1>
+
+    </div>
     </div>
     
   )

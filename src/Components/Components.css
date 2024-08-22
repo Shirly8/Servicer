@@ -79,6 +79,7 @@ h3 {
   gap: 15px;
   padding: -1%;
   margin-bottom:-10px;
+  color: #FF914D;
 }
 
 .ratingtext2 {
@@ -89,7 +90,7 @@ h3 {
   padding: -1%;
   margin-bottom:-10px;
   margin-top: -35px;
-
+  color: #FF914D;
 }
 
 .reviewinput {
