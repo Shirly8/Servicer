@@ -137,7 +137,7 @@ function SentimentIQ() {
           value = {reviewText}
           onChange = {(e) => setReviewText(e.target.value)}
           ></textarea>
-          <div className="send-icon" style = {{position: "relative", top: "-70px", left: "45%"}}onClick = {analyzeSentiment}/>
+          <div className="send-icon" style = {{width: "1em", position: "relative", top: "-70px", left: "45%"}}onClick = {analyzeSentiment}/>
 
           {sentimentScore !=null && (
           <div style = {{marginTop: '-40px'}}>

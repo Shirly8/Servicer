@@ -59,7 +59,7 @@ h3 {
   width:5vw;
   height: 5vh;
   left: 45%;
-  top: -4.5%;
+  top: -5.5%;
 }
 
 .buffer-icon {
@@ -70,7 +70,7 @@ h3 {
   width:5vw;
   height: 5vh;
   left: 45%;
-  top: -4.5%;
+  top: -5.5%;
   animation: spin 1s linear infinite;
 }
 
