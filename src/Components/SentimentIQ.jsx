@@ -1,5 +1,6 @@
 import React from 'react';
 import './Components.css'
+import Papa from 'papaparse';
 import { useState, useEffect } from 'react'
 import star from '../images/star.png'
 import buffer from '../images/Buffer.png'
@@ -12,76 +13,71 @@ function SentimentIQ() {
   const [sentimentScore, setSentimentScore] = useState(null);
   const [reviewText,setReviewText] = useState("");
   const [metrics, setMetrics] = useState({ accuracy: 0, f1: 0, precision: 0, recall: 0 });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [sentiment, setSentiment] = useState('')
   
 
   //GENERATE SYNTHETIC REVIEW
   const generateReviews = async () => {
-    setLoading(true)
-    try {
-      const response = await fetch('/generateReviews', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ratings})
-      });
+      // Fetch from CSV if status is 403
+      return fetch('../../Files/reviews.csv')
+      
+          .then(response => response.text())
+          .then(data => {
+            const parsedData = Papa.parse(data, { header: true });
+            
+            const first4Reviews = parsedData.data.map(item => ({
+              text: item.Review,
+              rating: item.Rating
+            }));
 
+            setReviews(first4Reviews);
 
-      //Sending review to LLM
-      const data = await response.json();
-      setReviews([]);
-      setReviews(data);
-      setReviewsGenerated(true);
+            // Simulate loading for 5 seconds
+              setTimeout(() => {
+              setLoading(false);
+              fetchMetrics()
+          }, 5000);
 
-      //Get the metrics after generating the reviews
-      // fetchMetrics();
-
-    }catch (error){
-      console.log("Error generating reviews: ", error)
-    }finally {
-      setLoading(false)
-    }
-  }
+          });
+        }
 
 
   //Analyze the Sentiment
   const analyzeSentiment = async () => {
-    try {
-      const response = await fetch ('/analyzeSentiment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({text: reviewText})
-      });
-      
+    fetch('../../Files/SentimentScores.csv')
+    .then(response => response.text())
+    .then(data => {
+      const parsedData = Papa.parse(data, { header: true });
+      const matchedReview = parsedData.data.find(review => review.Review === reviewText);
+      setSentimentScore(matchedReview.Rating);
 
-      //Get the sentiment score
-      const data = await response.json();
-      setSentimentScore(data.score);
-    }catch (error) {
-      console.log("Error getting sentiment score: ", error);
-    }
+      // if (matchedReview.Score > 0.90) {
+      //   setSentiment('XL-NET Model interpreted this review as positive.')
+      // }else if (matchedReview.Score > 0.5) {
+      //   setSentiment('XL-NET Model interpreted this review as neutral.')
+      // }else {
+      //   setSentiment('XL-NET Model interpreted this review as negative.')
+      // }
+    });
   };
 
 
   //FETCH THE METRICS:
     const fetchMetrics = async () => {
-      try {
-        const response = await fetch('/computeMetrics', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-  
-        const data = await response.json();
-        setMetrics(data);
-      } catch (error) {
-        console.log("Error fetching metrics: ", error);
-      }
-    };
+      fetch('../../Files/modelEval.json')
+      .then(response => response.json())
+
+      .then(data => {
+          setMetrics({
+            accuracy: data.accuracy,
+            precision: data.precision,
+            recall: data.recall,
+            f1: data.f1
+        })
+        setReviewsGenerated(true)
+    });
+  }
 
     useEffect(()=> {
       generateReviews();
@@ -96,7 +92,9 @@ function SentimentIQ() {
       providing insights into how your customers feel about your products or services. 
       By integrating NLP techniques, real-time analysis and robust evaluation metrics, 
       SentimentIQ captures your customer reviews, continuously improving our model to provide you with the most accurate sentiment score possible.
-      </p>
+      <br></br><br></br>
+      <em>Note: The back-end server has been disabled for this deployment, so some features may not be available.</em>
+    </p>
     
       <div className = "halves">
         <div className = "half1">
@@ -111,7 +109,7 @@ function SentimentIQ() {
           <div className = "reviews">
           {reviews.map((review,index) => (
            
-          <div key = {index} className = "review">
+          <div key = {index} className = "review" onClick = {() => setReviewText(review.text)} >
             <div className = "ratingtext">
             <h2>{review.rating}</h2> 
             <img src = {star} style = {{height: "2em"}}></img>
@@ -121,8 +119,6 @@ function SentimentIQ() {
           </div>
                     
           ))}
-          <button className = "generateReview" onClick = {generateReviews}>Re-generate</button>
-
         </div>
         )}
 
@@ -131,11 +127,13 @@ function SentimentIQ() {
 
 
         <div className = "half2">
-          <h1 className = "miniheading">Enter Review</h1>
+          <h1 className = "miniheading">Try our NLP Model</h1>
 
           <textarea className = "reviewinput" style = {{height: "125px"}}
           value = {reviewText}
           onChange = {(e) => setReviewText(e.target.value)}
+          placeholder = {`Click on any of the past reviews and see its sentiment analysis on the XLNET Model`}
+          disabled
           ></textarea>
           <div className="send-icon" style = {{width: "1em", position: "relative", top: "-70px", left: "45%"}}onClick = {analyzeSentiment}/>
 
@@ -143,17 +141,17 @@ function SentimentIQ() {
           <div style = {{marginTop: '-40px'}}>
             <h3>Sentiment Score: </h3>
             <div className = "ratingtext2">
-              <h1> {sentimentScore.toFixed(0)}</h1>
+              <h1> {sentimentScore}</h1>
               <img src = {star} style = {{height: "4em"}}></img>
             </div>
-
+            {/* <p style = {{fontSize: "13px"}}>{sentiment}</p> */}
           </div>
           )}
 
 
           {reviewGenerated && (
             <div className = "evaluatetable">
-              <h2 className = "evaluateTitle" > Model Analysis </h2>
+              <h2 className = "evaluateTitle" >Current Model Analysis </h2>
 
               <div className="evaluatebox">
                 <div className="metric">

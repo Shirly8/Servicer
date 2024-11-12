@@ -4,6 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 40px;
 }
 
 .chat {
@@ -39,39 +40,92 @@ h3 {
   font-size: 15px;
 }
 
-.inputText {
-  margin-top: 5px;
+.input-container {
   position: relative;
-  width: 95%;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0px;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.suggestionBox{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.suggestions {
+  position: absolute;
+  bottom: 82%;
+  left: 2%;
+  right: 5%;
+  opacity: 0.2;
+  background-color: black;
+  max-height: 150px;
+  overflow-y: scroll;
+  color: white;
+  margin: 0px;
+  padding: 0px;
+  
+}
+
+.each-suggestion{
+  font-style: italic;
+  padding: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.each-suggestion:hover{
+  background-color: gray;
+}
+
+.each-suggestion.selected{
+  background-color: gray;
+}
+
+.inputText {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 5px;
   background-color: transparent;
   border: 1px solid lightgray;
   border-radius: 15px;
-  height: 4em;
+  height: 3.5em;
   color: lightgray;
-  
+
 }
 
 .send-icon {
   background: url('../images/1.svg') no-repeat center center;
-  position: relative;
   background-size: contain;
   cursor: pointer;
-  width:5vw;
-  height: 5vh;
-  left: 45%;
-  top: -5.5%;
+  width: 25px;
+  height: 25px;
+  transform: translateX(-130%);
+  margin-top:0.5%;
 }
 
 .buffer-icon {
   background: url('../images/Buffer.png') no-repeat center center;
-  position: relative;
   background-size: contain;
-  cursor: pointer;
-  width:5vw;
-  height: 5vh;
-  left: 45%;
-  top: -5.5%;
+  width: 30px;
+  height: 30px;
+  transform: translateX(-250%);
+  position: relative;
+  left: -35px;
   animation: spin 1s linear infinite;
+  margin-top: 0.5%;
 }
 
 .chat-box {

@@ -1,0 +1,8 @@
+{
+    "model": "xlnet-base-cased",
+    "dataset": "reviews.csv",
+    "accuracy": 0.9067796610169492,
+    "precision": 0.905811526044577,
+    "recall": 0.9067796610169492,
+    "f1": 0.8970387874837027
+}

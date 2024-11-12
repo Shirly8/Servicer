@@ -9,14 +9,14 @@ import fourstar from './images/4.5star.png'
 import SentimentIQ from './Components/SentimentIQ';
 import QueryIQ from './Components/QueryIQ';
 import RecommendIQ from './Components/RecommendIQ';
-
-import PdfViewer from './PDFViewer'
+import SlideComponent from './slideshow';
 
 
 function App() {
 
   const [clickedComponent, setClickedComponent] = useState(null);
   const tabsRef = useRef(null);
+
 
 
   //Scroll-To the Tab feature
@@ -50,6 +50,7 @@ function App() {
     setClickedComponent(prevComponent => prevComponent === component ? null : component);
   };
 
+
   return (
     <div className = 'main'>
 
@@ -62,11 +63,13 @@ function App() {
         <h2 className = "nav">Our Location </h2>
         <h2 className = "nav">About Us</h2>
       </div> 
+
       </header>
+      
 
     <div className = "thumbnail">  
        <h1 className = "thumbnailfont">Elevate your Service Experience with AI</h1>
-       <button className = "buttonthumnail">Learn More</button>
+       <a href = "https://www.ShirleyProject.com/servicer"><button className = "buttonthumnail">Learn More</button> </a>
     </div>
 
 
@@ -88,18 +91,20 @@ function App() {
     <h1> Toronto's First THREE Michelin Star</h1>
 
     <div className = "three">
-      <div className = "image1">
+      <div className = "image1" onClick = {() => window.open('../Files/ArettiMenu.pdf', '_blank')}>
         <h4>Menu</h4></div>
       
-      <div className = "image2">
+      <div className = "image2" onClick = {() => window.open('../Files/ArettiQ&A.pdf', '_blank')}>
         <h4>FAQ</h4>
         </div>
       
-      <div className = "image3">
+      <div className = "image3" onClick = {() => window.open('../Files/Aretti_Blog.pdf', '_blank')}>
         <h4>About Us</h4>
       </div>
     </div>
 
+
+    
 
     <div className = "centered">
     <h1> What our CRITICS say...</h1>
@@ -107,49 +112,45 @@ function App() {
     <div className = "three2">
       <div className = "critics">
         <h5>Gordan Ramsay</h5>
-        <p1>Aretti is a culinary masterpiece with impeccable service and a menu that is a symphony of flavors. 
+        <p className = "p1">Aretti is a culinary masterpiece with impeccable service and a menu. 
           The Polpo alla Griglia and Osso Buco were standout dishes, 
           and the Chocolate Fondant was the perfect ending to an unforgettable meal. 
-          Every detail, from presentation to ambiance, is designed to create a memorable evening.
-          <img className = "reviewstar" src = {fivestar}></img>
-        </p1>
+          Every detail, from presentation to ambiance, is bloody amazing.
+        </p>
+        <img className = "reviewstar" src = {fivestar}></img>
+
       </div>
 
       <div className = "critics">
         <h5>Anthony Bourdain</h5>
-        <p1>Dining at Aretti is like stepping into a world of culinary artistry, 
+        <p className = "p1">Dining at Aretti is like stepping into a world of culinary artistry, 
           with luxurious ambiance and precision in every dish. 
           The Foie Gras Torchon and Tagliatelle al Tartufo were divine, 
           and the Pistachio Gelato was a delightful finish. 
           Aretti sets the standard for fine dining in Toronto.
-          <img className = "reviewstar" src = {fivestar}></img>
-        </p1>
+        </p>
+        <img className = "reviewstar" src = {fivestar}></img>
+
       </div>
 
       <div className = "critics">
         <h5>Ruth Reichi</h5>
-        <p1>Aretti offers a refined atmosphere and exceptional service, 
+        <p className = "p1">Aretti offers a refined atmosphere and exceptional service, 
           with standout dishes like Carpaccio di Manzo and Seafood Risotto. 
-          While the Lobster Roll Sliders could have been more innovative, 
-          the overall experience was exceptional, making Aretti one of the finest top-tier dining destination in Toronto.
-          <img className = "reviewstar" src = {fourstar}></img>
-        </p1>
+          While the Lobster Sliders could have been more innovative, 
+          the overall experience was exceptional, making Aretti one of the finest dining destination in Toronto.
+        </p>
+        <img className = "reviewstar" src = {fourstar}></img>
+
       </div>
     </div>    
     </div>
 
     </div>
-    <div classname = "slideshow">
-    <div className= 'thumbnails'></div>
-    <div className = "thirds">
-    <h6>One Secret Ingredients...</h6>
-    <p2>Our chef’s passion for cooking. That’s it. 
-      Our extensive menu, featuring 85 dishes and 25 drinks, 
-      was curated by our initial team of six chefs, including our owner, 
-      the renowned Chef Shirley Huang. Our commitment to perfection 
-      and our customers is what makes Aretti truly special.</p2>
-    </div>
-    </div>
+
+      <SlideComponent></SlideComponent>
+
+
 
     <div className = "thirds2">
       <div className = "end"></div>
@@ -160,6 +161,8 @@ function App() {
         <p>Address: 123 Random Road, A1B 3C4, Toronto, ON Canada</p>
         <p>Phone Number: +1 (123) - 456 - 7890</p>
         <p>Email: Reservations@Aretti.com</p>
+        <br></br>
+        <h2 style = {{textAlign: "center"}}>Follow Us</h2>
         <p>Instagram: @ArettiDining</p>
         <p>Facebook: @ArettiDining</p>
         <p>Website: ArettiDining.com</p>
