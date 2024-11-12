@@ -5,16 +5,13 @@ import { useState, useEffect } from 'react'
 import star from '../images/star.png'
 import buffer from '../images/Buffer.png'
 
-
 function SentimentIQ() {
   const [reviews, setReviews] = useState([]);
-  const [ratings, setRatings] = useState("");
   const [reviewGenerated, setReviewsGenerated] = useState(false);
   const [sentimentScore, setSentimentScore] = useState(null);
   const [reviewText,setReviewText] = useState("");
   const [metrics, setMetrics] = useState({ accuracy: 0, f1: 0, precision: 0, recall: 0 });
   const [loading, setLoading] = useState(true);
-  const [sentiment, setSentiment] = useState('')
   
 
   //GENERATE SYNTHETIC REVIEW
@@ -62,6 +59,7 @@ function SentimentIQ() {
     });
   };
 
+  // const analyzeSentiment = async () => {
 
   //FETCH THE METRICS:
     const fetchMetrics = async () => {

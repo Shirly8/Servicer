@@ -1,7 +1,175 @@
 .full{
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
+  margin-top: 40px;
+}
+
+
+.recommendBox{
+  display: flex;  
+  width: 95vw;
+  height: 90vh;
+  flex-direction: column;
+}
+
+.head2 {
+  text-align: left;
+  color: #4c5d62;
+  font-size: 18px;
+  font-weight: 100;
+}
+
+.recommendOptions{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-top: 0;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 20px;
+}
+
+.option1, .option2, .option3, .option4, .option5, .option6, .option7, .option8{
+  border: 0.5px solid green;
+  min-width: 100px;
+  min-height: 100px;
+  border-radius: 50%;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.option1::before, .option2::before, .option3::before, .option4::before, .option5::before, .option6::before, .option7::before, .option8::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; 
+}
+
+.option1:hover, .option2:hover, .option3:hover, .option4:hover, .option5:hover, .option6:hover, .option7:hover, .option8:hover {
+  border: 4px solid white;
+}
+
+.option1:hover::before, .option2:hover::before, .option3:hover::before, .option4:hover::before, .option5:hover::before, .option6:hover::before, .option7:hover::before, .option8:hover::before {
+  background-color: rgba(0, 0, 0, 0.5); /* BLACK OVERLAY */
+}
+
+.option1 {
+  background-image: url('../Images/menu/FoodType4.png');
+}
+.option2 {
+  background-image: url('../Images/menu/FoodType.png');
+}
+.option3 {
+  background-image: url('../Images/menu/FoodType2.png');
+}
+.option4 {
+  background-image: url('../Images/menu/FoodType3.png');
+}
+.option5 {
+  background-image: url('../Images/menu/FoodType5.png');
+}
+.option6 {
+  background-image: url('../Images/menu/FoodType6.png');
+}
+.option7 {
+  background-image: url('../Images/menu/FoodType7.png');
+}
+.option8 {
+  background-image: url('../Images/menu/FoodType8.png');
+}
+
+.option1::after, .option2::after, .option3::after, .option4::after, .option5::after, .option6::after, .option7::after, .option8::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  color: white; 
+  font-size: 20px;
+  z-index: 2;
+  font-family: 'Vollkorn', serif;
+}
+
+.option1:hover::after, .option2:hover::after, .option3:hover::after, .option4:hover::after, .option5:hover::after, .option6:hover::after, .option7:hover::after, .option8:hover::after {
+  opacity: 1; 
+}
+
+.dropdown{
+  width: 60%;
+  height: 50%;
+  border: 1px solid white;
+  border-radius: 15px;
+  background-color: transparent;
+  color: white;
+  font-family: 'Vollkorn', serif;
+  font-size: 18px;
+  margin: 0px 20% 0px 20%;
+}
+
+
+.head3{
+  text-align: center;
+  color: #4c5d62;
+  font-size: 30px;
+  font-weight: 100;
+  margin-top: 5%;
+  font-weight: 900;
+}
+
+.head4{
+  text-align: center;
+  color: #4c5d62;
+  font-size: 15px;;
+  font-weight: 100;
+  margin-top: 3%;
+  border: none;
+  margin: 0px;
+  margin-top: -2%;
+  padding: 0px;
+}
+
+.buffers-icon {
+  background: url('../images/Buffer.png') no-repeat center center;
+  background-size: contain;
+  margin-left: 47%;
+  margin-top: 4%;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+@media (max-width: 850px) {
+  .recommendOptions{
+    padding-left: 20px;
+    padding-right: 20px;
+    gap:5px;
+  }
+
+  .option1, .option2, .option3, .option4, .option5, .option6, .option7, .option8{
+    width: 100px;
+    height: 100px;
+  }
 }

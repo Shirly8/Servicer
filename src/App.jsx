@@ -91,14 +91,14 @@ function App() {
     <h1> Toronto's First THREE Michelin Star</h1>
 
     <div className = "three">
-      <div className = "image1" onClick = {() => window.open('../Files/ArettiMenu.pdf', '_blank')}>
+      <div className = "image1" onClick = {() => window.open('/public/ArettiMenu.pdf', '_blank')}>
         <h4>Menu</h4></div>
       
-      <div className = "image2" onClick = {() => window.open('../Files/ArettiQ&A.pdf', '_blank')}>
+      <div className = "image2" onClick = {() => window.open('/public/ArettiQ&A.pdf', '_blank')}>
         <h4>FAQ</h4>
         </div>
       
-      <div className = "image3" onClick = {() => window.open('../Files/Aretti_Blog.pdf', '_blank')}>
+      <div className = "image3" onClick = {() => window.open('/public/Aretti_Blog.pdf', '_blank')}>
         <h4>About Us</h4>
       </div>
     </div>
