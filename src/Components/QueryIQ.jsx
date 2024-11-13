@@ -18,7 +18,7 @@ function QueryIQ() {
 
   useEffect(() => {
     // Load and parse the CSV file
-    Papa.parse('../../Files/QA.csv', {
+    Papa.parse('/Files/QA.csv', {
       download: true,
       header: true,
       complete: (results) => {
@@ -54,6 +54,7 @@ function QueryIQ() {
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
+      event.preventDefault();
       if (showSuggestions && selectedIndex >= 0) {
         setPrompt(suggestions[selectedIndex]);
         setShowSuggestions(false);

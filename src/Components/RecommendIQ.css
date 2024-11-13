@@ -15,7 +15,7 @@
   flex-direction: column;
 }
 
-.head2 {
+h2 {
   text-align: left;
   color: #4c5d62;
   font-size: 18px;
@@ -36,8 +36,8 @@
 
 .option1, .option2, .option3, .option4, .option5, .option6, .option7, .option8{
   border: 0.5px solid green;
-  min-width: 100px;
-  min-height: 100px;
+  width: 125px;
+  height: 125px;
   border-radius: 50%;
   cursor: pointer;
   background-repeat: no-repeat;
@@ -66,28 +66,28 @@
 }
 
 .option1 {
-  background-image: url('../Images/menu/FoodType4.png');
+  background-image: url('../images/FoodType4.png');
 }
 .option2 {
-  background-image: url('../Images/menu/FoodType.png');
+  background-image: url('../images/FoodType.png');
 }
 .option3 {
-  background-image: url('../Images/menu/FoodType2.png');
+  background-image: url('../images/FoodType2.png');
 }
 .option4 {
-  background-image: url('../Images/menu/FoodType3.png');
+  background-image: url('../images/FoodType3.png');
 }
 .option5 {
-  background-image: url('../Images/menu/FoodType5.png');
+  background-image: url('../images/FoodType5.png');
 }
 .option6 {
-  background-image: url('../Images/menu/FoodType6.png');
+  background-image: url('../images/FoodType6.png');
 }
 .option7 {
-  background-image: url('../Images/menu/FoodType7.png');
+  background-image: url('../images/FoodType7.png');
 }
 .option8 {
-  background-image: url('../Images/menu/FoodType8.png');
+  background-image: url('../images/FoodType8.png');
 }
 
 .option1::after, .option2::after, .option3::after, .option4::after, .option5::after, .option6::after, .option7::after, .option8::after {
@@ -111,10 +111,10 @@
 .dropdown{
   width: 60%;
   height: 50%;
-  border: 1px solid white;
+  border: 1px solid 4c5d62;
   border-radius: 15px;
   background-color: transparent;
-  color: white;
+  color: #4c5d62;
   font-family: 'Vollkorn', serif;
   font-size: 18px;
   margin: 0px 20% 0px 20%;

@@ -12,12 +12,15 @@ function SentimentIQ() {
   const [reviewText,setReviewText] = useState("");
   const [metrics, setMetrics] = useState({ accuracy: 0, f1: 0, precision: 0, recall: 0 });
   const [loading, setLoading] = useState(true);
+  const [score, setScore] = useState(null);
+  const [sentiment, setSentiment] = useState(null);
+  const [sentimentText, setSentimentText] = useState(null);
   
 
   //GENERATE SYNTHETIC REVIEW
   const generateReviews = async () => {
       // Fetch from CSV if status is 403
-      return fetch('../../Files/reviews.csv')
+      return fetch('/Files/reviews.csv')
       
           .then(response => response.text())
           .then(data => {
@@ -42,20 +45,24 @@ function SentimentIQ() {
 
   //Analyze the Sentiment
   const analyzeSentiment = async () => {
-    fetch('../../Files/SentimentScores.csv')
+    fetch('/Files/SentimentScores.csv')
     .then(response => response.text())
     .then(data => {
       const parsedData = Papa.parse(data, { header: true });
       const matchedReview = parsedData.data.find(review => review.Review === reviewText);
       setSentimentScore(matchedReview.Rating);
+      setScore(matchedReview.Score);
 
-      // if (matchedReview.Score > 0.90) {
-      //   setSentiment('XL-NET Model interpreted this review as positive.')
-      // }else if (matchedReview.Score > 0.5) {
-      //   setSentiment('XL-NET Model interpreted this review as neutral.')
-      // }else {
-      //   setSentiment('XL-NET Model interpreted this review as negative.')
-      // }
+      if (matchedReview.Score > 0.90) {
+        setSentiment('lightgreen')
+        setSentimentText('Positive')
+      }else if (matchedReview.Score > 0.5) {
+        setSentiment('yellow')
+        setSentimentText('Neutral')
+      }else {
+        setSentiment("lightcoral")
+        setSentimentText('Negative')
+      }
     });
   };
 
@@ -63,7 +70,7 @@ function SentimentIQ() {
 
   //FETCH THE METRICS:
     const fetchMetrics = async () => {
-      fetch('../../Files/modelEval.json')
+      fetch('/Files/modelEval.json')
       .then(response => response.json())
 
       .then(data => {
@@ -109,7 +116,7 @@ function SentimentIQ() {
            
           <div key = {index} className = "review" onClick = {() => setReviewText(review.text)} >
             <div className = "ratingtext">
-            <h2>{review.rating}</h2> 
+            <h2 className = "heading2">{review.rating}</h2> 
             <img src = {star} style = {{height: "2em"}}></img>
             </div>
           
@@ -133,16 +140,28 @@ function SentimentIQ() {
           placeholder = {`Click on any of the past reviews and see its sentiment analysis on the XLNET Model`}
           disabled
           ></textarea>
-          <div className="send-icon" style = {{width: "1em", position: "relative", top: "-70px", left: "45%"}}onClick = {analyzeSentiment}/>
+          <div className="send-icon" style = {{width: "1em", position: "relative", top: "-70px", left: "53%"}}onClick = {analyzeSentiment}/>
 
           {sentimentScore !=null && (
-          <div style = {{marginTop: '-40px'}}>
-            <h3>Sentiment Score: </h3>
+          <div className = "modelscore">
+
+            <div className = "scoretext">
+              <h3>Sentiment Score: </h3>
+              <div className = "ratingtext3">
+              <h1 style = {{color: sentiment}}> {(score * 100).toFixed(2)}%</h1>
+              <p className = "sentimenttext" style = {{color: sentiment}}>{sentimentText}</p>
+            </div>
+            </div>
+            
+            <div className = "scoretext">
+            <h3>Sentiment Rating: </h3>
             <div className = "ratingtext2">
               <h1> {sentimentScore}</h1>
               <img src = {star} style = {{height: "4em"}}></img>
             </div>
-            {/* <p style = {{fontSize: "13px"}}>{sentiment}</p> */}
+            </div>
+            
+  
           </div>
           )}
 

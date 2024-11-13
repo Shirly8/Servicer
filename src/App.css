@@ -58,11 +58,12 @@ header{
 }
 
 .nav {
-  font-size: 15px;
+  font-size: 21px;
 }
 
 .nav:hover {
   transform: translateY(-10px);
+  color: lightslategray
 }
 
 .logo {
@@ -326,7 +327,8 @@ h6 {
 
   .nav {
     margin-top:-15px;
-    font-size: 15px;
+    font-size: 20px;
+    font-weight: 100;
     transition: transform 0.3s ease;
   }
 

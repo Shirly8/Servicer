@@ -78,10 +78,16 @@ h3 {
 
 }
 
+.heading2{
+  font-size: 40px;
+  color: #FF914D;
+  font-weight: bolder;
+}
 .ratingtext {
   justify-content: center;
   display: flex;
   align-items: center;
+  flex-direction: row;
   gap: 15px;
   padding: -1%;
   margin-bottom:-10px;
@@ -100,6 +106,34 @@ h3 {
   margin-top: -35px;
   color: #FF914D;
   font-family: 'Arial', sans-serif;
+}
+
+.ratingtext3 {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 15px;
+  padding: -1%;
+  margin-bottom:-10px;
+  margin-top: -35px;
+  color: #FF914D;
+  font-family: 'Arial', sans-serif;
+}
+
+.sentimenttext{
+  margin-top: -45px;
+  font-size: 12px;
+  font-family: 'Vollkorn', sans-serif;
+  font-weight: bold
+  
+}
+
+.scoretext{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 60px;
 }
 
 .reviewinput {
@@ -161,6 +195,14 @@ h3 {
   height: 150px;
   animation: spin 1s linear infinite;
 }
+
+.modelscore{
+  margin-top: -40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 
 @keyframes spin {
   0% { transform: rotate(0deg); }

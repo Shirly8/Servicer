@@ -1,7 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react'
 import './RecommendIQ.css'
-import './QueryChat.css'
 import Papa from 'papaparse'
 
 
@@ -14,7 +13,7 @@ function RecommendIQ() {
   const [buffer, setBuffer] = useState(false)
 
   useEffect(() => {
-    Papa.parse('../Files/Menu.csv', {
+    Papa.parse('/Files/Menu.csv', {
       download: true,
       header: true,
       complete: (results) => {
@@ -71,7 +70,7 @@ function RecommendIQ() {
         <div>
           <h2> Choose your {selectedOption} </h2>
 
-            <select className = "dropdown"value = {dropdownOptions} onChange = {handleDropdownChange}>
+            <select className = "dropdown" value = {selectedDropDown} onChange = {handleDropdownChange}>
               {dropdownOptions.map((option, index) => (
                 <option key={index} value={option}>{option}</option>
               ))}
@@ -82,7 +81,7 @@ function RecommendIQ() {
         {selectedDropDown &&
         <div>
           <h3 className = "head3"> OUR RECOMMENDATIONS FOR YOU: </h3> 
-          <h4 className = "head4"> if you liked {selectedDropDown}, you might also like: </h4>
+          <h4 className = "head4"> If you liked {selectedDropDown}, you might also like: </h4>
 
           {buffer ? (
           <div>
