@@ -56,7 +56,7 @@ function App() {
 
       <header>
         <img src = {Arettis} className = "logo left"></img>
-        <img src = {Servicer} style = {{height: "7em"}}></img>
+        <img src = {Servicer} style = {{height: "8em"}}></img>
        
        <div className = "navRight">
         <h2 className = "nav">Menu</h2>
