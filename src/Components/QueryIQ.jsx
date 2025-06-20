@@ -1,13 +1,43 @@
 import React from 'react';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './QueryChat.css'
 import user from '../images/user.png'
 import Aretti from '../images/Arettis.svg'
+import Papa from 'papaparse';
+import Fuse from 'fuse.js'
+
 
 function QueryIQ() {
   const [prompt, setPrompt] = useState('')
   const [responses, setResponses] = useState([])
   const [buffer, setBuffer] = useState(false);
+
+
+  //DISPLAY FAQs as suggestions
+  const [suggestions, setSuggestions] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [data,setData] = useState([])
+
+
+  useEffect(() => {
+    // Load and parse the CSV file
+    Papa.parse('/Files/QA.csv', {
+      download: true,
+      header: true,
+      complete: (results) => {
+        setData(results.data)
+      },
+      
+    });
+  }, []);
+
+  //GET THE DATA FROM CSV FLE
+  const fuse = new Fuse(data, {
+    keys: ['Question'],
+    threshold: 0.5,
+    includeScore: true
+  });
 
 
   const sendPrompt = async (event) => {
@@ -35,11 +65,42 @@ function QueryIQ() {
   }
   }
 
-    const handleKeyPress = (event) => {
-      if (event.key === 'Enter') {
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (showSuggestions && selectedIndex >= 0) {
+        setPrompt(suggestions[selectedIndex]);
+        setShowSuggestions(false);
+      } else {
         sendPrompt(event);
       }
+    } else if (event.key === 'ArrowDown') {
+      setSelectedIndex((prevIndex) => (prevIndex + 1) % suggestions.length);
+    } else if (event.key === 'ArrowUp') {
+      setSelectedIndex((prevIndex) => (prevIndex - 1 + suggestions.length) % suggestions.length);
     }
+  };
+
+   //SHOW SUGGESTIONS
+   const displaySuggestions = (e) => {
+    const input = e.target.value;
+    setPrompt(input);
+  
+    if (input.length > 0) {
+      const results = fuse.search(input).map(result => result.item.Question);
+      setSuggestions(results);
+      setShowSuggestions(results.length > 0);
+      setSelectedIndex(-1);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
+  
+
+  const clickedSuggestions = (suggestion) => {
+    setPrompt(suggestion);  
+    setShowSuggestions(false);
+  }
 
   return (
     <>
@@ -70,15 +131,34 @@ function QueryIQ() {
 
       ))}
 
-
     </div>
-     <input 
+
+    <div className = "input-container">
+      
+      <div className = "suggestionBox">
+      {showSuggestions && (
+        <div className = "suggestions">
+          {suggestions.map((item, index) => (
+            <div
+              key = {index}
+              className={`each-suggestion ${index === selectedIndex ? 'selected' : ''}`}
+              onClick={() => clickedSuggestions(item)}
+            >
+            {item}
+            </div>
+          ))}
+        </div>
+      )}
+    
+    <input 
      className = "inputText"
      value = {prompt}
-     onChange = {e => setPrompt(e.target.value)}
+     onChange = {displaySuggestions}
      onKeyDown={handleKeyPress}
      >
      </input>
+
+     </div>
 
      {buffer ? (
       <div className = "buffer-icon">
@@ -90,6 +170,7 @@ function QueryIQ() {
 
 
     </div> 
+    </div>
 
       </div>
   

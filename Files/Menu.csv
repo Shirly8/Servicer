@@ -1,0 +1,106 @@
+Item_ID,Item_Name,Category,Description,Price
+1,Bruschetta al Pomodoro,Appetizers,"Toasted bread topped with a blend of ripe tomatoes, basil, and garlic.",$12.00
+2,Caprese Salad,Appetizers,"Fresh mozzarella, heirloom tomatoes, and basil drizzled with balsamic reduction.",$14.00
+3,Arancini di Riso,Appetizers,Crispy risotto balls filled with mozzarella and served with marinara sauce.,$15.00
+4,Carpaccio di Manzo,Appetizers,"Thinly sliced raw beef tenderloin with capers, arugula, and shaved Parmesan.",$18.00
+5,Polpo alla Griglia,Appetizers,"Grilled octopus served with lemon, olive oil, and fresh herbs.",$20.00
+6,Prosciutto e Melone,Appetizers,Thin slices of prosciutto paired with fresh melon and mint.,$16.00
+7,Insalata di Mare,Appetizers,"A medley of seafood including calamari, shrimp, and mussels in a light lemon vinaigrette.",$22.00
+8,Truffle Fries,Appetizers,Crispy fries tossed with truffle oil and Parmesan cheese.,$14.00
+9,Stuffed Zucchini Blossoms,Appetizers,"Zucchini flowers stuffed with ricotta and herbs, lightly fried.",$17.00
+10,Foie Gras Torchon,Appetizers,Silky foie gras served with brioche and fig compote.,$25.00
+11,Lobster Roll Sliders,Appetizers,Mini brioche buns filled with lobster meat in a light mayo dressing.,$20.00
+12,Crab Rangoon,Appetizers,Crispy wontons stuffed with crab meat and cream cheese.,$15.00
+13,Crispy Calamari,Appetizers,Lightly breaded calamari served with marinara and lemon aioli.,$17.00
+14,Stuffed Mushrooms,Appetizers,"Mushrooms filled with sausage, garlic, and herbs.",$16.00
+15,Cheese-Stuffed Meatballs,Appetizers,"Beef meatballs with melted cheese, served with marinara sauce.",$18.00
+16,Mini Caprese Skewers,Appetizers,"Cherry tomatoes, mozzarella balls, and basil on skewers, drizzled with balsamic glaze.",$14.00
+17,Spicy Tuna Tartare,Appetizers,"Fresh tuna mixed with spicy mayo and avocado, served with wonton chips.",$19.00
+18,Eggplant Caponata,Appetizers,"Sweet and sour eggplant stew with tomatoes, olives, and capers.",$16.00
+19,Beef and Gorgonzola Crostini,Appetizers,Toasted bread topped with thinly sliced beef and crumbled Gorgonzola cheese.,$17.00
+20,Fried Ravioli,Appetizers,Breaded and fried ravioli served with marinara sauce for dipping.,$15.00
+21,Caesar Salad,Salads,"Crisp romaine lettuce with Caesar dressing, Parmesan, and croutons.",$15.00
+22,Beet and Goat Cheese Salad,Salads,"Roasted beets, goat cheese, candied walnuts, and arugula with a honey vinaigrette.",$16.00
+23,Arugula Salad,Salads,"Fresh arugula with pear, blue cheese, and walnuts in a balsamic dressing.",$14.00
+24,Greek Salad,Salads,"Mixed greens with olives, cucumbers, tomatoes, red onions, and feta cheese.",$16.00
+25,Lobster Salad,Salads,Sweet lobster meat with citrus vinaigrette and avocado.,$22.00
+26,Warm Quinoa Salad,Salads,Quinoa with roasted vegetables and a lemon-tahini dressing.,$15.00
+27,Spinach and Strawberry Salad,Salads,"Baby spinach with fresh strawberries, almonds, and goat cheese.",$16.00
+28,Panzanella,Salads,"Italian bread salad with tomatoes, cucumbers, and basil.",$14.00
+29,Fennel and Citrus Salad,Salads,Shaved fennel with orange segments and a light vinaigrette.,$15.00
+30,Roasted Pepper and Burrata Salad,Salads,Roasted bell peppers with creamy burrata cheese and basil.,$18.00
+31,Spaghetti alla Carbonara,Entrees,"Spaghetti with pancetta, eggs, and Parmesan in a creamy sauce.",$22.00
+32,Penne all'Arrabbiata,Entrees,Penne pasta with a spicy tomato sauce and garlic.,$20.00
+33,Risotto ai Funghi Porcini,Entrees,Creamy risotto with porcini mushrooms and truffle oil.,$24.00
+34,Fettuccine Alfredo,Entrees,Fettuccine in a rich Parmesan cream sauce.,$23.00
+35,Gnocchi al Pesto,Entrees,Potato gnocchi with basil pesto and pine nuts.,$21.00
+36,Lasagna alla Bolognese,Entrees,"Classic lasagna with layers of beef ragù, béchamel, and cheese.",$26.00
+37,Osso Buco,Entrees,Braised veal shanks served with gremolata and polenta.,$30.00
+38,Tagliatelle al Tartufo,Entrees,Fresh tagliatelle with a rich truffle cream sauce.,$28.00
+39,Veal Marsala,Entrees,Veal medallions in a Marsala wine sauce with mushrooms.,$29.00
+40,Eggplant Parmesan,Entrees,Breaded eggplant slices layered with marinara and mozzarella cheese.,$22.00
+41,Chicken Piccata,Entrees,Chicken breast in a lemon-caper sauce served with garlic mashed potatoes.,$24.00
+42,Braised Short Ribs,Entrees,Tender short ribs with red wine reduction and creamy polenta.,$32.00
+43,Pork Saltimbocca,Entrees,"Pork medallions wrapped in prosciutto and sage, served with a white wine sauce.",$28.00
+44,Lamb Chops with Mint Pesto,Entrees,Grilled lamb chops with a mint pesto and roasted vegetables.,$34.00
+45,Mushroom and Spinach Lasagna,Entrees,"Layers of lasagna with mushrooms, spinach, and ricotta cheese.",$25.00
+46,Seafood Risotto,Entrees,"Creamy risotto with shrimp, scallops, and mussels.",$29.00
+47,Chicken Marsala,Entrees,Chicken breast in a Marsala wine sauce with mushrooms and served with asparagus.,$26.00
+48,Stuffed Bell Peppers,Entrees,"Bell peppers filled with a mixture of rice, vegetables, and cheese.",$22.00
+49,Lobster Ravioli,Entrees,Homemade ravioli stuffed with lobster and served in a light cream sauce.,$27.00
+50,Pork Osso Buco,Entrees,"Braised pork shank with a rich tomato and herb sauce, served with risotto.",$31.00
+51,Grilled Swordfish,Seafood,Swordfish steak with mango salsa and a side of rice.,$32.00
+52,Baked Halibut,Seafood,Halibut fillet with an herb crust and roasted vegetables.,$30.00
+53,Poached Salmon,Seafood,Salmon poached in a dill sauce served with asparagus.,$28.00
+54,Crab Cakes,Seafood,Crab cakes with remoulade sauce and a side salad.,$24.00
+55,Lobster Thermidor,Seafood,"Lobster meat in a creamy wine sauce, baked in its shell.",$36.00
+56,Shrimp Scampi,Seafood,"Shrimp sautéed in garlic butter and white wine, served with pasta.",$25.00
+57,Seared Scallops,Seafood,Pan-seared scallops with lemon butter and cauliflower purée.,$34.00
+58,Mussels in White Wine,Seafood,"Steamed mussels with garlic, white wine, and herbs.",$22.00
+59,Crab-Stuffed Mushrooms,Seafood,"Mushrooms filled with crab meat and cheese, baked to perfection.",$20.00
+60,Octopus Salad,Seafood,Grilled octopus with a citrus dressing and roasted potatoes.,$21.00
+61,Chocolate Fondant,Desserts,"Rich chocolate cake with a molten center, served with raspberry coulis.",$14.00
+62,Vanilla Bean Crème Brûlée,Desserts,Classic crème brûlée with a caramelized sugar top.,$12.00
+63,Lemon Tart,Desserts,Tart with a tangy lemon filling and meringue topping.,$13.00
+64,Tiramisu,Desserts,Layers of coffee-soaked ladyfingers with mascarpone cream.,$15.00
+65,Cheese Platter,Desserts,"A selection of artisanal cheeses with honey, nuts, and fruit.",$18.00
+66,Flourless Chocolate Cake,Desserts,Dense and rich chocolate cake with a hint of espresso.,$14.00
+67,Almond Panna Cotta,Desserts,Creamy panna cotta with a berry compote.,$13.00
+68,Berry Sorbet,Desserts,Refreshing sorbet made with a mix of seasonal berries.,$11.00
+69,Raspberry Lemon Cheesecake,Desserts,Creamy cheesecake with a raspberry lemon swirl.,$16.00
+70,Baked Alaska,Desserts,Meringue-covered cake with layers of sponge and ice cream.,$17.00
+71,Peach Cobbler,Desserts,"Warm peach cobbler with a crumbly topping, served with vanilla ice cream.",$12.00
+72,Chocolate Soufflé,Desserts,Light and airy chocolate soufflé with a dusting of powdered sugar.,$15.00
+73,Pistachio Gelato,Desserts,Creamy gelato with a rich pistachio flavor.,$11.00
+74,Apple Tart Tatin,Desserts,Upside-down caramelized apple tart with a dollop of whipped cream.,$14.00
+75,Profiteroles,Desserts,Cream puffs filled with vanilla custard and topped with chocolate sauce.,$13.00
+76,Mojito,Cocktails,"Rum, lime, mint, and soda water.",$14.00
+77,Margarita,Cocktails,"Tequila, lime juice, and triple sec, served with a salted rim.",$16.00
+78,Old Fashioned,Cocktails,"Bourbon, bitters, sugar, and orange peel.",$15.00
+79,Negroni,Cocktails,"Gin, Campari, and sweet vermouth.",$16.00
+80,Martini,Cocktails,"Gin or vodka with dry vermouth, served with an olive.",$17.00
+81,Espresso Martini,Cocktails,"Vodka, espresso, coffee liqueur, and simple syrup.",$18.00
+82,Bellini,Cocktails,Prosecco with peach purée.,$14.00
+83,Bloody Mary,Cocktails,"Vodka, tomato juice, and a blend of spices and herbs.",$15.00
+84,Manhattan,Cocktails,"Whiskey, sweet vermouth, and bitters.",$16.00
+85,Gimlet,Cocktails,"Gin, lime juice, and simple syrup.",$15.00
+86,Whiskey Sour,Cocktails,"Whiskey, lemon juice, and simple syrup.",$15.00
+87,Chardonnay,Wine,A medium-bodied white wine with notes of apple and vanilla.,"$10/glass, $40/bottle"
+88,Sauvignon Blanc,Wine,A crisp white wine with citrus and herbaceous notes.,"$12/glass, $45/bottle"
+89,Pinot Noir,Wine,A light-bodied red wine with flavors of cherry and spice.,"$12/glass, $45/bottle"
+90,Cabernet Sauvignon,Wine,A full-bodied red wine with notes of blackcurrant and oak.,"$14/glass, $55/bottle"
+91,Merlot,Wine,A smooth red wine with flavors of plum and chocolate.,"$13/glass, $50/bottle"
+92,Prosecco,Wine,A sparkling white wine with fruity and floral notes.,"$10/glass, $38/bottle"
+93,Champagne,Wine,Classic sparkling wine with rich flavors and fine bubbles.,"$18/glass, $80/bottle"
+94,Rosé,Wine,A light and refreshing wine with hints of strawberries and melon.,"$11/glass, $42/bottle"
+95,Port,Wine,"A sweet, fortified wine with flavors of dark fruit and chocolate.","$16/glass, $70/bottle"
+96,Sherry,Wine,A fortified wine with nutty and caramel notes.,"$12/glass, $45/bottle"
+97,Craft IPA,Beer,Hoppy and aromatic India Pale Ale.,$9.00
+98,Pilsner,Beer,A crisp and refreshing lager.,$8.00
+99,Stout,Beer,A dark beer with rich coffee and chocolate flavors.,$10.00
+100,Wheat Beer,Beer,A light beer with hints of citrus and spice.,$9.00
+101,Amber Ale,Beer,A balanced beer with caramel and toasty flavors.,$8.00
+102,Belgian Witbier,Beer,A spiced wheat beer with notes of orange peel and coriander.,$10.00
+103,Saison,Beer,A farmhouse ale with fruity and spicy notes.,$11.00
+104,Lager,Beer,A clean and crisp lager.,$7.00
+105,Brown Ale,Beer,A malty beer with hints of caramel and nuts.,$9.00
