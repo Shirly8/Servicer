@@ -20,7 +20,7 @@ function App() {
 
 
 
-  //Scroll-To the Tab feature
+  //Scroll-To the Tab features
   useEffect(() => {
     if (clickedComponent !=null && tabsRef.current) {
       tabsRef.current.scrollIntoView({behavior: 'smooth'})
