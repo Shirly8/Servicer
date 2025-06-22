@@ -36,8 +36,6 @@ def analyzeSentence(sentence):
 
 import csv
 
-import csv
-
 def analyze_csv(input_csv):
     # Dictionary to store aspect sentiment scores
     aspect_scores = {aspect: [] for aspect in aspects}
