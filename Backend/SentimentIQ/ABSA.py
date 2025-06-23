@@ -2,7 +2,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipe
 import csv
 import os
 import re
-from ASPAGeneration import CATEGORY_PHRASES
+from .ASPAGeneration import CATEGORY_PHRASES
 
 # Loading the fine-tuned ABSA model/tokenizer/Classifier
 script_dir = os.path.dirname(__file__)
@@ -56,9 +56,8 @@ def analyzeSentence(sentence):
 def main():
     print("==============================================")
     print("=        Aspect-Based Sentiment Analyzer     =")
-    print("=            (5-Star Rating Model)           =")
     print("==============================================")
-    print("Enter a review sentence to analyze, or type 'exit' to quit.")
+    print("Sentence to Analyze: ")
     
     while True:
         sentence = input("\nReview: ")

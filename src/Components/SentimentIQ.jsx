@@ -4,48 +4,57 @@ import { useState, useEffect } from 'react'
 import star from '../images/star.png'
 import buffer from '../images/Buffer.png'
 import SentimentBar from '../Components/SentimentBar'
-import ModelAnalysis from './ModelAnalysis';
 
 
 function SentimentIQ() {
   const [reviews, setReviews] = useState([]);
-  const [ratings, setRatings] = useState("");
-  const [reviewGenerated, setReviewsGenerated] = useState(false);
-  const [sentimentScore, setSentimentScore] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [reviewText,setReviewText] = useState("");
-  const [metrics, setMetrics] = useState({ accuracy: 0, f1: 0, precision: 0, recall: 0 });
-  const [loading, setLoading] = useState(false);
   const [aspectAnalysis, setAspectAnalysis] = useState([]);
-  const [showModelAnalysis, setShowModelAnalysis] = useState(false);
-  const [reviewaspect, setReviewAspect] = useState([]);
 
+  // Fetch initial reviews from the CSV on component mount
+  useEffect(() => {
+    const fetchInitialReviews = async () => {
+      try {
+        const response = await fetch('/getInitialReviews');
+        if (response.ok) {
+          const data = await response.json();
+          
 
-  
-
-  //GENERATE SYNTHETIC REVIEW
-  const generateReviews = async () => {
-    setLoading(true)
-    try {
-      const response = await fetch('/generateReviews', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ratings})
-      });
-
-      if (response.ok) {
-        const data = await response.json(); 
-        setReviews(data); 
-        fetchMetrics();
-      }else {
-        console.log("Error fetching data")
+          setReviews(data.reverse()); 
+        } else {
+          console.error("Error fetching initial reviews:", response.statusText);
+          setReviews([]);
+        }
+      } catch (error) {
+        console.error('Error fetching initial reviews:', error);
+        setReviews([]);
+      } finally {
+        setLoading(false);
       }
+    };
 
+    fetchInitialReviews();
+  }, []); 
+
+
+  //GENERATE a single NEW SYNTHETIC REVIEW
+  const generateNewReviews = async () => {
+    setLoading(true);
+    setAspectAnalysis([]);
+    setReviewText('');
+    try {
+      // 1. Trigger backend to regenerate reviews
+      await fetch('/generateReviews', { method: 'POST' });
+      // 2. Fetch the new reviews
+      const response = await fetch('/getInitialReviews');
+      if (response.ok) {
+        const data = await response.json();
+        setReviews(data.reverse());
+      }
     } catch (error) {
-      console.error('Error generating reviews:', error);
-    } finally{
-      
+      console.error('Error generating new reviews:', error);
+    } finally {
       setLoading(false);
     }
   };
@@ -53,6 +62,7 @@ function SentimentIQ() {
 
   //Analyze the Sentiment
   const analyzeSentiment = async () => {
+    if (!reviewText) return;
     try {
       const response = await fetch('/analyzeSentiment', {
         method: 'POST',
@@ -63,55 +73,19 @@ function SentimentIQ() {
       });
   
       const data = await response.json();
-      console.log(data)
-      console.log(data.score)
       
-      setAspectAnalysis(data.aspect_analysis);
+      // The backend returns an object like { "Service": 1, "Food": 5 }.
+      // We need to convert it to an array of objects for mapping.
+      const analysisArray = Object.entries(data.aspect_analysis || {}).map(([aspect, stars]) => ({
+        Aspect: aspect,
+        Stars: stars,
+      }));
+      setAspectAnalysis(analysisArray);
 
-
-      setSentimentScore(data.score);
     } catch (error) {
       console.log('Error getting sentiment score: ', error);
     }
   };
-  
-
-
-  //FETCH THE METRICS:
-  const fetchMetrics = async () => {
-    try {
-        const response = await fetch('/computeMetrics', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-  
-        });
-
-        const data = await response.json();
-        setMetrics(data.results);
-        setReviewsGenerated(true);
-        setReviewAspect(data.abasresults)
-        console.log(data.abasresults)
-
-    } catch (error) {
-        console.log("Error fetching metrics: ", error);
-    }
-};
-
-
-    useEffect(()=> {
-      generateReviews();
-    }, []);
-
-    const handleModelAnalysisPopup = () => {
-      setShowModelAnalysis(true); 
-    };
-  
-    const closeModelAnalysisPopup = () => {
-      setShowModelAnalysis(false);
-    };
-  
 
   return (
     <>
@@ -132,75 +106,69 @@ function SentimentIQ() {
           <textarea className = "reviewinput" style = {{height: "100px"}}
           value = {reviewText}
           onChange = {(e) => setReviewText(e.target.value)}
-          placeholder='Click on any of the past reviews and see its sentiment analysis on the XL-NET Model'
+          placeholder='Click on any of the past reviews and see its sentiment analysis on the ABSA Model'
           ></textarea>
           <div className="send-icon" style = {{width: "1em", position: "relative", top: "-67px", left: "53%"}} onClick = {analyzeSentiment}/>
 
-          {sentimentScore != null && (
-          <div style = {{marginTop: '-40px'}}>
-            <h3 style = {{textAlign: "center", fontFamily: "Arial"}}>Sentiment Score: </h3>
-            <div className = "ratingtext2">
-              <h1> {(sentimentScore * 100).toFixed(2)} %</h1>
+          {aspectAnalysis.length > 0 && (
+            <div style = {{marginTop: '-40px'}}>
+              <h3 style = {{textAlign: "center", fontFamily: "Arial"}}>Aspect Analysis:</h3>
+              <div className = "sentimentBar">
+                {aspectAnalysis.map((aspect, index) => (
+                  <SentimentBar key={index} aspect={aspect.Aspect} score={aspect.Stars} />
+                ))}
+              </div>
             </div>
-
-            {/* Render Sentiment Bars for each aspect */}
-        <div className = "sentimentBar">
-          {aspectAnalysis.map((aspect, index) => (
-            <SentimentBar key={index} aspect={aspect.Aspect} score={aspect.Score} sentiment = {aspect.Sentiment} />
-          ))}
-        </div>
-            
-          </div>
           )}
         
         </div>
 
         <div className = "half1">
-        <h1 className = "miniheading">Sample Reviews</h1>
+          <h1 className = "miniheading">Sample Reviews</h1>
 
-        {loading ? (
-          <div className = "loadingspace">
-          <div className = "loading">
-            <img src = {buffer} className = "spinner"></img>
-            <p style = {{color: "#436176"}}> <strong> LLMs (Meta Llama 3)</strong> help create realistic customer reviews, enabling our <strong>XLNET model</strong> to evaluate sentiment analysis effectiveness.
-            <br></br> <br></br>
-            <strong>Iterative Learning </strong> allows the model to get repeatedly trained on new data. This iterative process allows the model to learn from its errors, adjust its weights, and improve its ability to predict sentiment more accurately
-            </p>
-          </div>
-          </div>
-        ): (
-          <div className = "reviews">
-          {reviews.map((review,index) => (
-           
-          <div key = {index} className = "review" onClick={() => setReviewText(review.text.replace(/['"]+/g, ''))}>
-            <div className = "ratingtext">
-            <h2>{review.rating}</h2> 
-            <img src = {star} style = {{height: "2em"}}></img>
+          {loading && reviews.length === 0 ? (
+            <div className = "loadingspace">
+              <div className = "loading">
+                <img src = {buffer} className = "spinner" alt="Loading..."></img>
+                <p style = {{color: "#436176"}}>Loading initial reviews...</p>
+              </div>
             </div>
-          
-            <p style = {{fontSize: "11px"}}>{review.text}</p>
-          </div>
-                    
-          ))}
-          <button className = "generateReview" onClick = {generateReviews}>ReGenerate</button>
-
-        </div>
-        )}
-            {reviewGenerated && (
-            <button onClick={handleModelAnalysisPopup}> See Model Analysis</button>
+          ) : reviews.length === 0 ? (
+            <div className = "loadingspace">
+              <div className = "loading" style={{justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
+                <button className = "generateReview" onClick = {generateNewReviews}>Generate New Reviews</button>
+                <p style={{color: "#436176", marginTop: '30px'}}>
+                  Could not load initial reviews. <br/>
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="reviewbox">
+              <button
+                className="generateReview"
+                onClick={generateNewReviews}
+                disabled={loading}
+              >
+                {loading ? 'Generating...' : 'Generate New Reviews'}
+              </button>
+              <div className="reviews">
+                {loading && reviews.length === 0 &&
+                  <div className="loading-bar-placeholder">Waiting for first review...</div>
+                }
+                {reviews.map((review, index) => (
+                  <div key={index} className="review" onClick={() => setReviewText(review.message.replace(/['"]+/g, ''))}>
+                    <div className="ratingtext">
+                      <h2>{review.rating}</h2>
+                      <img src={star} style={{ height: "2em" }} alt="star" />
+                    </div>
+                    <p style={{fontSize: "11px"}}>{review.message}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
-
         </div>
-        {/* Display ModelAnalysis popup */}
-        {showModelAnalysis && (
-            <ModelAnalysis
-              metrics={metrics}
-              reviewaspect={reviewaspect}
-              onClose={closeModelAnalysisPopup}
-            />
-          )}
-        
-    </div>
+      </div>
     </div>
     </>
   )

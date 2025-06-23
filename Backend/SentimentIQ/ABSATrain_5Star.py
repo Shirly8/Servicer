@@ -118,7 +118,7 @@ def main():
 
     # Load the dataset
     df = pd.read_csv(csv_file)
-    df = df.rename(columns={"Review": "sentence", "Aspect": "aspect", "Stars": "label"})
+    df = df.rename(columns={"Review": "sentence", "Aspect": "aspect", "Rating": "label"})
     
     # Map star ratings (1-5) to labels (0-4)
     df['label'] = df['label'] - 1

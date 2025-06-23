@@ -95,7 +95,7 @@ function App() {
 
 
     <div className = "centered">
-    <h1> Toronto's First THREE Michelin Star</h1>
+    <h1> Toronto's First TWO Michelin Star</h1>
 
     <div className = "three">
       <div className = "image1" onClick = {() => window.open('../Files/ArettiMenu.pdf', '_blank')}>
