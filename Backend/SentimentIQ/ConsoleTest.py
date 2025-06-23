@@ -1,44 +1,47 @@
 import pandas as pd
-from transformers import TextClassificationPipeline
-from transformers import XLNetTokenizer, XLNetForSequenceClassification, TextClassificationPipeline
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, TextClassificationPipeline
 import csv
 
 
 #Load model, tokenizer and classifier
-model_path = './SentimentFilter'
-tokenizer = XLNetTokenizer.from_pretrained(model_path)
-model = XLNetForSequenceClassification.from_pretrained(model_path)
-classifier = TextClassificationPipeline(model=model, tokenizer=tokenizer, top_k=None, device=-1)
+model_path = 'yangheng/deberta-v3-base-absa-v1.1'
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+model = AutoModelForSequenceClassification.from_pretrained(model_path)
+classifier = TextClassificationPipeline(model=model, tokenizer=tokenizer, device=-1)
+
+aspects = [
+        "Service", "Ambience", "Price", "Food Quality", "Taste", "Value", "Menu", "Location", "Drinks"
+    ]
 
 #Make prediction for each text
 def predict_sentiment(text):
-    predictions = classifier(text)
-    for prediction in predictions[0]:
-        if prediction['label'] == 'LABEL_1':
-            sentiment_score = prediction['score']
-            return sentiment_score
-    return 0
+    results = []
+    for aspect in aspects:
+        result = classifier(text, text_pair=aspect)
+        sentiment_label = result[0]['label']
+        score = result[0]['score']
+        
+        sentiment = {
+            "Aspect": aspect,
+            "Sentiment": sentiment_label,
+            "Score": score
+        }
+        results.append(sentiment)
+    return results
 
 
 def main():
 
-    threshold_positive = 0.75
-    threshold_neutral = 0.50
-    threshold_negative = 0.25
-
     while True:
-        print(f"\n\n\nWelcome to Sentiment Reviewer. \n Threshold: \n  Positive: ", threshold_positive, "\n  Neutral: ", threshold_neutral, "\n  Negative: ", threshold_negative)
+        print(f"\n\n\nWelcome to Sentiment Reviewer.")
 
         text = input("Enter your review: ")
  
-        sentiment_score = predict_sentiment(text)
+        sentiment_results = predict_sentiment(text)
 
-        if sentiment_score >= threshold_positive:
-            print(f"Positive Sentiment (Score: {sentiment_score:.2f})\n")
-        elif sentiment_score > threshold_negative and sentiment_score < threshold_positive:
-            print(f"Neutral Sentiment (Score: {sentiment_score:.2f})\n")
-        else:
-            print(f"Negative Sentiment (Score: {sentiment_score:.2f})\n")
+        print("Aspect-Based Sentiment Scores:")
+        for result in sentiment_results:
+            print(f"  - {result['Aspect']}: {result['Sentiment']} (Score: {result['Score']:.2f})")
 
 
 def reviewCSV(filename):
@@ -48,11 +51,12 @@ def reviewCSV(filename):
     with open('sentiment_scores2.csv', 'w') as file:
         writer = csv.writer(file)
 
-        writer.writerow(['Review', 'Sentiment Score', 'Rating'])
+        writer.writerow(['Review', 'Aspect', 'Sentiment', 'Score'])
 
         for index, row in df.iterrows():
-            sentiment_score = predict_sentiment(row['Review'])
-            writer.writerow([row['Review'], sentiment_score])
+            sentiment_results = predict_sentiment(row['Review'])
+            for result in sentiment_results:
+                writer.writerow([row['Review'], result['Aspect'], result['Sentiment'], result['Score']])
 
 
 

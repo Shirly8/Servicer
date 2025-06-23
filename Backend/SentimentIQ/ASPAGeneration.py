@@ -10,72 +10,150 @@ import asyncio
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Define aspect categories and sentiments
-CATEGORIES = {
-    "Service": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the service and nothing else. Do not mention any restaurant names.",
-    "Ambience": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the ambience and nothing else. Do not mention any restaurant names.",
-    "Price": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the pricing and nothing else. Do not mention any restaurant names.",
-    "Food Quality": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the food quality and nothing else. Do not mention any restaurant names.",
-    "Taste": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the taste of the food and nothing else. Do not mention any restaurant names.",
-    "Value": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the value for money and nothing else. Do not mention any restaurant names.",
-    "Menu": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the menu variety and nothing else. Do not mention any restaurant names.",
-    "Location": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the location and nothing else. Do not mention any restaurant names.",
-    "Drinks": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the drinks and nothing else. Do not mention any restaurant names.",
-    "Pasta": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the pasta and nothing else. Do not mention any restaurant names.",
-    "Seafood": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the seafood and nothing else. Do not mention any restaurant names.",
-    "Appetizer": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the appetizer and nothing else. Do not mention any restaurant names.",
-    "Desserts": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the desserts and nothing else. Do not mention any restaurant names.",
-    "Decoration": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the decoration and nothing else. Do not mention any restaurant names.",
-    "Italian": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the Italian cuisine and nothing else. Do not mention any restaurant names.",
-    "Main Entrees": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the main entrees and nothing else. Do not mention any restaurant names.",
-    "Reservation / Waiting Time": "Generate a ONE SENTENCE, realistic restaurant review that ONLY discusses the reservation or waiting time and nothing else. Do not mention any restaurant names."
+CATEGORY_PHRASES = {
+    "Service": ["service", "wait times", "reservations", "staff", "waiter", "waitress", "wait", "waited", "check", "server", "host", "hostess", "bartender", "attentiveness"],
+    "Ambience": ["ambience", "atmosphere", "decor", "noise level", "music", "lighting", "seating", "table setting", "noisy", "noise", "loud", "vibe", "setting", "cleanliness"],
+    "Price": ["pricing", "cost", "affordability", "bill", "expense", "overpriced", "cheap", "expensive"],
+    "Food Quality": ["food quality", "freshness", "ingredients", "presentation", "temperature of the food", "cooked", "dish", "plate", "preparation"],
+    "Taste": ["taste of the food", "flavor", "seasoning", "texture"],
+    "Value": ["value for money", "portion size", "portions", "serving size", "deal", "rip-off"],
+    "Menu": ["menu variety", "menu options", "selection of dishes"],
+    "Location": ["location", "accessibility", "parking"],
+    "Drinks": ["drinks", "cocktails", "wine", "beer", "beverages"],
+    "Appetizers": ["appetizers", "starters", "bruschetta", "calamari", "arancini", "prosciutto e melone", "truffle fries"],
+    "Salads": ["salads", "caesar salad", "caprese salad", "arugula salad", "panzanella"],
+    "Pasta": ["pasta", "spaghetti", "penne", "fettuccine", "gnocchi", "lasagna", "risotto", "ravioli"],
+    "Main": ["main course", "entrees", "osso buco", "lamb chops", "veal marsala", "chicken piccata", "short ribs", "main dish", "signature dish", "special"],
+    "Seafood": ["seafood", "fish", "swordfish", "salmon", "shrimp", "lobster", "scallops", "octopus", "crab cakes"],
+    "Desserts": ["desserts", "tiramisu", "panna cotta", "crème brûlée", "cheesecake", "gelato", "sorbet"],
+    "Culture": ["culture", "Italian", "European"]
 }
 
 
-SENTIMENTS = {0: "Negative", 1: "Positive"}
+
+PROMPT_TEMPLATE = "Generate a ONE SIMPLE SHORT SENTENCE, realistic restaurant review that discusses the {phrase}. Do not talk about other aspects. Do not mention any restaurant names. Aretti is the only allowed name."
+PROMPT_TEMPLATE_COMPLEX = "Generate a SINGLE, realistic restaurant review sentence that contains both a POSITIVE sentiment about {positive_phrase} and a NEGATIVE sentiment about {negative_phrase}. Do not mention any other aspects. Do not mention any restaurant names. Aretti is the only allowed name."
+
+SENTIMENTS = {0: "Negative", 1: "Positive", 2: "Complex"}
 
 # API URL
 API_URL = "http://localhost:11434/api/generate"
 
 # Send prompt to Ollama API and return the generated message
 async def fetch_review_from_api(session, model):
-    aspect = random.choice(list(CATEGORIES.keys()))
-    sentiment = random.choice([0, 1])  # 0 = Negative, 1 = Positive
-    prompt = CATEGORIES[aspect] + (" Make it a negative review." if sentiment == 0 else " Make it a positive review.")
+    sentiment = random.choice([0, 1, 2])  # 0: Negative, 1: Positive, 2: Complex
+
+    # Simple Positive/Negative Review
+    if sentiment == 0 or sentiment == 1:
+        aspect = random.choice(list(CATEGORY_PHRASES.keys()))
+        phrase = random.choice(CATEGORY_PHRASES[aspect])
+        sentiment_str = "positive" if sentiment == 1 else "negative"
+        prompt = PROMPT_TEMPLATE.format(phrase=phrase) + f" Make it a {sentiment_str} review."
+
+        headers = {"Content-Type": "application/json"}
+        data = {"model": model, "prompt": prompt, "stream": False}
+        
+        try:
+            async with session.post(API_URL, headers=headers, json=data) as response:
+                response.raise_for_status()
+                llm_response = await response.json()
+                message = llm_response["response"]
+                return [(message, aspect, SENTIMENTS[sentiment])]
+        except (aiohttp.ClientError, ValueError, KeyError) as e:
+            logging.error(f"Error in simple review generation: {e}")
+            return None
     
-    headers = {"Content-Type": "application/json"}
-    data = {"model": model, "prompt": prompt, "stream": False}
-    
-    try:
-        async with session.post(API_URL, headers=headers, json=data) as response:
-            response.raise_for_status()
-            llm_response = await response.json()
-            return llm_response["response"], aspect, SENTIMENTS[sentiment]
-    except aiohttp.ClientError as e:
-        logging.error(f"Error making request: {e}")
-        return None, None, None
-    except (ValueError, KeyError) as e:
-        logging.error(f"Error parsing response: {e}")
-        return None, None, None
+    # Complex Mixed-Sentiment Review
+    else: # sentiment == 2
+        # Pick two different aspects
+        aspect1, aspect2 = random.sample(list(CATEGORY_PHRASES.keys()), 2)
+        
+        # Assign one positive, one negative
+        positive_aspect, negative_aspect = random.sample([aspect1, aspect2], 2)
+        
+        positive_phrase = random.choice(CATEGORY_PHRASES[positive_aspect])
+        negative_phrase = random.choice(CATEGORY_PHRASES[negative_aspect])
+        
+        prompt = PROMPT_TEMPLATE_COMPLEX.format(positive_phrase=positive_phrase, negative_phrase=negative_phrase)
+
+        headers = {"Content-Type": "application/json"}
+        data = {"model": model, "prompt": prompt, "stream": False}
+
+        try:
+            async with session.post(API_URL, headers=headers, json=data) as response:
+                response.raise_for_status()
+                llm_response = await response.json()
+                message = llm_response["response"]
+                # Return two data points from one generated sentence
+                return [
+                    (message, positive_aspect, "Positive"),
+                    (message, negative_aspect, "Negative")
+                ]
+        except (aiohttp.ClientError, ValueError, KeyError) as e:
+            logging.error(f"Error in complex review generation: {e}")
+            return None
 
 # Write generated messages to a CSV file
 async def generate_messages_to_csv(filename, model, num_messages):
+    # Always create a new file, so no need to check for header
+    try:
+        with open(filename, 'w', encoding='utf-8-sig', newline='') as csv_file:
+            writer = csv.writer(csv_file, quotechar='"', quoting=csv.QUOTE_ALL)
+            writer.writerow(["Review", "Aspect", "Sentiment"])
+            logging.info("WRITING HEADER...")
+            
+            generated_count = 0
+            while generated_count < num_messages:
+                start_time = time.time()
+                results = await fetch_review_from_api(session, model)
+                end_time = time.time()
+                
+                if results:
+                    for message, aspect, sentiment in results:
+                        if generated_count < num_messages:
+                            clean_message = message.replace('\n', ' ').replace('\r', '').replace('"', '').strip()
+                            writer.writerow([clean_message, aspect, sentiment])
+                            logging.info(f"{clean_message} \nAspect: {aspect}, Sentiment: {sentiment} ({(end_time - start_time) * 1000:.2f}ms)\n\n")
+                            generated_count += 1
+            
+            logging.info("FINISHED WRITING")
+    except Exception as e:
+        logging.error(f"Error writing to file: {e}")
+
+async def main_async(filename, model, num_messages):
     async with aiohttp.ClientSession() as session:
-        try:
-            with open(filename, 'w', encoding='utf-8-sig', newline='') as csv_file:
-                writer = csv.writer(csv_file, quotechar='"', quoting=csv.QUOTE_ALL)
-                writer.writerow(["Review", "Aspect", "Sentiment"])
-                logging.info("WRITING HEADER...")
+        # Pass the session to the generation function
+        await generate_messages_to_csv_with_session(filename, model, num_messages, session)
+
+async def generate_messages_to_csv_with_session(filename, model, num_messages, session):
+    try:
+        with open(filename, 'w', encoding='utf-8-sig', newline='') as csv_file:
+            writer = csv.writer(csv_file, quotechar='"', quoting=csv.QUOTE_ALL)
+            writer.writerow(["Review", "Aspect", "Sentiment"])
+            logging.info("WRITING HEADER...")
+            
+            generated_count = 0
+            while generated_count < num_messages:
+                start_time = time.time()
+                results = await fetch_review_from_api(session, model)
+                end_time = time.time()
                 
-                for _ in range(num_messages):
-                    start_time = time.time()
-                    message, aspect, sentiment = await fetch_review_from_api(session, model)
-                    end_time = time.time()
-                    
-                    if message is not None:
-                        sanitized_message = message.replace('\n', ' ').replace('\r', '').strip()
-                        writer.writerow([sanitized_message, aspect, sentiment])
-                        logging.info(f"Generated Review: {message} \nAspect: {aspect}, Sentiment: {sentiment} ({(end_time - start_time) * 1000:.2f}ms)\n\n")
-                
-                logging.info("FINISHED WRITING")
-        except Exception as e:
-            logging.error(f"Error writing to file: {e}")
+                if results:
+                    for message, aspect, sentiment in results:
+                        if generated_count < num_messages:
+                            clean_message = message.replace('\n', ' ').replace('\r', '').replace('"', '').strip()
+                            writer.writerow([clean_message, aspect, sentiment])
+                            logging.info(f"{clean_message} \nAspect: {aspect}, Sentiment: {sentiment} ({(end_time - start_time) * 1000:.2f}ms)\n\n")
+                            generated_count += 1
+            
+            logging.info("FINISHED WRITING")
+    except Exception as e:
+        logging.error(f"Error writing to file: {e}")
+
+if __name__ == "__main__":
+    # Use a single session for all requests
+    async def run_generation():
+        async with aiohttp.ClientSession() as session:
+            await generate_messages_to_csv_with_session("ASPAGeneratedReviews.csv", "llama3:8b", 5000, session)
+    
+    asyncio.run(run_generation())

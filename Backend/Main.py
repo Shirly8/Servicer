@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import SyntheticGenerator
+from SentimentIQ import ASPAGeneration as SyntheticGenerator
 import asyncio
-import ConsoleTest
-import Evaluator
+from SentimentIQ import ConsoleTest
+from SentimentIQ import Evaluator
 from QueryIQ import Query
 from QueryIQ import RAG
-import ABSA
-from RecommendIQ import NCF
+from SentimentIQ import ABSA
+# from RecommendIQ import NCF
 
 
 app = Flask(__name__, static_folder='static')
@@ -18,7 +18,7 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_cred
 @app.route('/generateReviews', methods = ['POST'])
 def generateReview():
     filename = 'SyntheticData.csv'
-    model = 'llama3'
+    model = 'deepseek-r1'
     num_messages = 16
 
     print("GenerateReviews!!!!!")
@@ -68,22 +68,22 @@ def queryChat():
     return jsonify({'response': response_text})
 
 
-# RECOMMENDIQ: get recommendaiton
-@app.route('/recommenditems', methods=['POST'])
-def recommend():
+# # RECOMMENDIQ: get recommendaiton
+# @app.route('/recommenditems', methods=['POST'])
+# def recommend():
 
-    print("Getting recommendations...")
-    data = request.get_json()
-    item_name = data.get("item_name")
+#     print("Getting recommendations...")
+#     data = request.get_json()
+#     item_name = data.get("item_name")
     
-    if not item_name:
-        return jsonify({"error": "Item name not provided."}), 400
+#     if not item_name:
+#         return jsonify({"error": "Item name not provided."}), 400
     
-    recs = NCF.get_recommendations(item_name)
-    if recs is None:
-        return jsonify({"error": f"Item '{item_name}' not found in menu."}), 404
+#     recs = NCF.get_recommendations(item_name)
+#     if recs is None:
+#         return jsonify({"error": f"Item '{item_name}' not found in menu."}), 404
     
-    return jsonify(recs)
+#     return jsonify(recs)
 
 
 if __name__ == '__main__':
