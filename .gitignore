@@ -46,9 +46,10 @@ coverage.xml
 .pytest_cache/
 
 # Models & Training Artifacts
-finetuned-ABSA/
-5star-absa/
-finetuned-ATE/
+Backend/SentimentIQ/finetuned-ABSA/
+Backend/SentimentIQ/5star-absa/
+Backend/SentimentIQ/finetuned-ATE/
+Backend/SentimentIQ/ABSA/
 lightning_logs/
 
 # Generated Data

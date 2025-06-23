@@ -144,7 +144,7 @@ async def generate_messages_to_csv_with_session(filename, model, num_total_datap
 if __name__ == "__main__":
     async def run_generation():
         async with aiohttp.ClientSession() as session:
-            # Generate a more robust dataset of 2000 data points
-            await generate_messages_to_csv_with_session("ASPAGeneratedReviews_5Star_Complex.csv", "llama3:8b", 2000, session)
+            # Generate a more robust dataset of 5000 data points
+            await generate_messages_to_csv_with_session("ASPAGeneratedReviews_5Star_Complex.csv", "llama3:8b", 5000, session)
     
     asyncio.run(run_generation())
