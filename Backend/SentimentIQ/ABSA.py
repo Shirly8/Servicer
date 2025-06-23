@@ -6,7 +6,7 @@ from ASPAGeneration import CATEGORY_PHRASES
 
 # Loading the fine-tuned ABSA model/tokenizer/Classifier
 script_dir = os.path.dirname(__file__)
-model_name = os.path.join(script_dir, 'finetuned-ABSA')
+model_name = os.path.join(script_dir, '5star-absa-v2')
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSequenceClassification.from_pretrained(model_name)
 classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
@@ -38,57 +38,32 @@ def analyzeSentence(sentence):
     for aspect in present_aspects:
         result = classifier(sentence, text_pair=aspect)
 
-        #find the label
-        sentiment_label = result[0]['label']
-        scores = result[0]['score']
+        # The model outputs 'LABEL_X', where X is 0-4. Convert to 1-5 stars.
+        label = result[0]['label']
+        star_rating = int(label.split('_')[-1]) + 1
+        confidence_score = result[0]['score']
 
         sentiment = {
             "Aspect": aspect,
-            "Sentiment": sentiment_label,
-            "Score": scores
+            "Stars": star_rating,
+            "Confidence": confidence_score
         }
         results.append(sentiment)
-        print(f"Aspect: {aspect}, Sentiment: {result[0]['label']} - {scores:.4f}")
+        print(f"Aspect: {aspect}, Stars: {star_rating}, Confidence: {confidence_score:.4f}")
 
     return results
 
-
-import csv
-
-def analyze_csv(input_csv):
-    # Get all possible aspects from CATEGORY_PHRASES
-    all_aspects = list(CATEGORY_PHRASES.keys())
-    # Dictionary to store aspect sentiment scores
-    aspect_scores = {aspect: [] for aspect in all_aspects}
-    
-    with open(input_csv, mode='r', encoding='utf-8-sig') as infile:
-        reader = csv.DictReader(infile)
-        
-        print(f"CSV Columns: {reader.fieldnames}")
-
-        for row in reader:
-            # The key should be 'Review' for a well-formed CSV.
-            review = row.get('Review')
-            if review:
-                results = analyzeSentence(review)
-                for result in results:
-                    aspect_scores[result['Aspect']].append(result['Score'])
-
-    # Calculate the average score for each aspect
-    averaged_aspect_scores = {}
-    for aspect, scores in aspect_scores.items():
-        if scores:
-            averaged_aspect_scores[aspect] = sum(scores) / len(scores)
-
-    return averaged_aspect_scores
-
-
-
-
 def main():
+    print("==============================================")
+    print("=        Aspect-Based Sentiment Analyzer     =")
+    print("=            (5-Star Rating Model)           =")
+    print("==============================================")
+    print("Enter a review sentence to analyze, or type 'exit' to quit.")
     
     while True:
-        sentence = input("Please enter a sentence to analyze: ")
+        sentence = input("\nReview: ")
+        if sentence.lower() == 'exit':
+            break
         analyzeSentence(sentence)
 
 if __name__ == "__main__":

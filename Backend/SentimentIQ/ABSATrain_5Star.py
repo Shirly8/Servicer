@@ -49,19 +49,22 @@ class ABSADataset(Dataset):
 
 # PyTorch Lightning Module for fine-tuning
 class ABSAClassifier(pl.LightningModule):
-    def __init__(self, model_name, num_labels, learning_rate=2e-5, total_steps=1000):
+    def __init__(self, model_name, num_labels, learning_rate=2e-5, total_steps=1000, ignore_mismatched_sizes=False):
         """
         Args:
             model_name (str): Hugging Face model repository name.
             num_labels (int): Number of target labels.
             learning_rate (float): Learning rate.
             total_steps (int): Total training steps (for the learning rate scheduler).
+            ignore_mismatched_sizes (bool): Whether to ignore layer size mismatches on load.
         """
-
-        
         super().__init__()
         self.save_hyperparameters()
-        self.model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=num_labels, ignore_mismatched_sizes=True)
+        self.model = AutoModelForSequenceClassification.from_pretrained(
+            model_name, 
+            num_labels=num_labels, 
+            ignore_mismatched_sizes=ignore_mismatched_sizes
+        )
         self.learning_rate = learning_rate
         self.total_steps = total_steps
         self.validation_step_outputs = []
@@ -102,16 +105,18 @@ class ABSAClassifier(pl.LightningModule):
         return [optimizer], [{'scheduler': scheduler, 'interval': 'step'}]
 
 def main():
-    # Parameters
-    model_name = os.path.join(os.path.dirname(__file__), 'finetuned-ABSA')
+    # Parameters for the training
+    # We start from the original pre-trained ABSA model for a clean slate
+    base_model_name = "yangheng/deberta-v3-base-absa-v1.1" 
+    output_model_name = "5star-absa-v2" # Saving as a new version
     csv_file = os.path.join(os.path.dirname(__file__), 'ASPAGeneratedReviews_5Star_Complex.csv')
     max_length = 128
     batch_size = 16
     num_labels = 5 # 1, 2, 3, 4, 5 stars
     learning_rate = 2e-5
-    max_epochs = 3
+    max_epochs = 5 # Increased epochs for better learning
 
-    # Load your CSV file
+    # Load the dataset
     df = pd.read_csv(csv_file)
     df = df.rename(columns={"Review": "sentence", "Aspect": "aspect", "Stars": "label"})
     
@@ -125,18 +130,28 @@ def main():
     train_df, val_df = train_test_split(df, test_size=0.1, random_state=42)
 
     # Create datasets and corresponding dataloaders
-    train_dataset = ABSADataset(train_df, model_name, max_length)
-    val_dataset = ABSADataset(val_df, model_name, max_length)
+    train_dataset = ABSADataset(train_df, base_model_name, max_length)
+    val_dataset = ABSADataset(val_df, base_model_name, max_length)
     
     # Increase num_workers for faster data loading
     num_workers = 4 if os.name == 'posix' else 0
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, num_workers=num_workers)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, persistent_workers=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, num_workers=num_workers, persistent_workers=True)
 
     total_steps = len(train_loader) * max_epochs
-    model = ABSAClassifier(model_name, num_labels, learning_rate, total_steps)
+    
+    # Initialize the classifier
+    # Pass ignore_mismatched_sizes=True because the base model has 3 labels but we want 5.
+    # This will discard the old head and add a new, randomly initialized one.
+    model = ABSAClassifier(
+        base_model_name, 
+        num_labels, 
+        learning_rate, 
+        total_steps,
+        ignore_mismatched_sizes=True
+    )
 
-    checkpoint_callback = ModelCheckpoint(monitor="val_f1", mode="max", filename='best-checkpoint')
+    checkpoint_callback = ModelCheckpoint(monitor="val_f1", mode="max")
     early_stop_callback = EarlyStopping(monitor="val_f1", patience=3, mode="max")
     lr_monitor = LearningRateMonitor(logging_interval='step')
 
@@ -151,11 +166,11 @@ def main():
     trainer.fit(model, train_loader, val_loader)
 
     # Save the final model to the new directory
-    save_dir = os.path.join(os.path.dirname(__file__), "5star-absa")
+    save_dir = os.path.join(os.path.dirname(__file__), output_model_name)
     os.makedirs(save_dir, exist_ok=True)
     model.model.save_pretrained(save_dir)
     # Save the tokenizer from the base model
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(base_model_name)
     tokenizer.save_pretrained(save_dir)
     print(f"Fine-tuned 5-star model saved to {save_dir}")
 

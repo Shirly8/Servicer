@@ -17,7 +17,7 @@ CATEGORY_PHRASES = {
     "Food Quality": ["food quality", "freshness", "ingredients", "presentation", "temperature of the food", "cooked", "dish", "plate", "preparation"],
     "Taste": ["taste of the food", "flavor", "seasoning", "texture"],
     "Value": ["value for money", "portion size", "portions", "serving size", "deal", "rip-off"],
-    "Menu": ["menu variety", "menu options", "selection of dishes"],
+    "Menu": ["menu", "variety", "menu options", "selection of dishes"],
     "Location": ["location", "accessibility", "parking"],
     "Drinks": ["drinks", "cocktails", "wine", "beer", "beverages"],
     "Appetizers": ["appetizers", "starters", "bruschetta", "calamari", "arancini", "prosciutto e melone", "truffle fries"],
