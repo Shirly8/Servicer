@@ -1,42 +1,48 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset
+from transformers import AutoTokenizer
 import torch
 
-# Dataset class for handling text data
-# Tensor([[‘CLS’ 101,  877,  674,  785,   23, 2319,  503,  876,  674, 2310]])
-class TextDataset(Dataset):
-    def __init__(self, encodings, labels):
-        self.encodings = encodings
-        self.labels = labels
-
-    def __getitem__(self, idx):
-        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
-        item['labels'] = torch.tensor(self.labels[idx])
-        return item
+class ABSADataset(Dataset):
+    """
+    Tokenized sentence/aspect pair and label.
+        {
+            'input_ids': tensor([101, 102, 103, 104, 105, 106, 107, 108, 109, 110]),
+            'attention_mask': tensor([...]),
+            'labels': tensor([1, 2, 3, 4, 5])
+        }
+    """
+    def __init__(self, df, model_name, max_length=128):
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.sentences = df['sentence'].tolist()
+        self.aspects = df['aspect'].tolist()
+        self.labels = df['label'].tolist()
+        self.max_length = max_length
 
     def __len__(self):
-        return len(self.labels)
-
-
-
-# Function to create datasets from CSV file
-def create_datasets(data_file, tokenizer):
-
-    # Splitting data into training and validation sets (20% used for validation)
-    data = pd.read_csv(data_file)
-    train_texts, val_texts, train_labels, val_labels = train_test_split(data['text'].tolist(), data['label'].tolist(), test_size=0.2)
+        return len(self.sentences)
     
 
-    # Tokenize the text
-    # Tokens: ['▁Food', '▁is', '▁great', '▁but', '▁service', '▁was', '▁terrible', '<pad>', '<pad>', '<pad>']
-    train_encodings = tokenizer(train_texts, truncation=True, padding=True, max_length=128, return_tensors="pt")
-    val_encodings = tokenizer(val_texts, truncation=True, padding=True, max_length=128, return_tensors="pt")
 
-    #Create a PytTorch Data Type
-    train_dataset = TextDataset(train_encodings, train_labels)
-    val_dataset = TextDataset(val_encodings, val_labels)
-    
-    
-    return train_dataset, val_dataset
+    def __getitem__(self, index):
+        sentence = self.sentences[index]
+        aspect = self.aspects[index]
+        label = self.labels[index]
 
+
+
+        # Tokenize the sentence and aspect as a pair
+        inputs = self.tokenizer(
+            sentence,
+            text_pair=aspect,
+            truncation=True,
+            padding='max_length',
+            max_length=self.max_length,
+            return_tensors='pt'
+        )
+
+
+        # Remove batch dimension - dataset is single propered shape for batching
+        inputs = {key: val.squeeze(0) for key, val in inputs.items()}
+        inputs['labels'] = torch.tensor(label, dtype=torch.long)
+        return inputs

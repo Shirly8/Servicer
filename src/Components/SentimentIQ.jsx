@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Components.css'
-import { useState, useEffect } from 'react'
 import star from '../images/star.png'
 import buffer from '../images/Buffer.png'
 import SentimentBar from '../Components/SentimentBar'
+import ModelAnalysis from '../Components/ModelAnalysis'
 
 
 function SentimentIQ() {
@@ -11,6 +11,8 @@ function SentimentIQ() {
   const [loading, setLoading] = useState(true);
   const [reviewText,setReviewText] = useState("");
   const [aspectAnalysis, setAspectAnalysis] = useState([]);
+  const [modelMetrics, setModelMetrics] = useState(null);
+  const [showModelAnalysis, setShowModelAnalysis] = useState(false);
 
   // Fetch initial reviews from the CSV on component mount
   useEffect(() => {
@@ -19,9 +21,9 @@ function SentimentIQ() {
         const response = await fetch('/getInitialReviews');
         if (response.ok) {
           const data = await response.json();
-          
-
           setReviews(data.reverse()); 
+          // Fetch model metrics after reviews are loaded
+          fetchModelMetrics();
         } else {
           console.error("Error fetching initial reviews:", response.statusText);
           setReviews([]);
@@ -37,6 +39,19 @@ function SentimentIQ() {
     fetchInitialReviews();
   }, []); 
 
+  // Fetch model evaluation metrics
+  const fetchModelMetrics = async () => {
+    setModelMetrics(null); // Show loading state
+    try {
+      const response = await fetch('/computeMetrics');
+      if (response.ok) {
+        const data = await response.json();
+        setModelMetrics(data);
+      }
+    } catch (error) {
+      console.error('Error fetching model metrics:', error);
+    }
+  };
 
   //GENERATE a single NEW SYNTHETIC REVIEW
   const generateNewReviews = async () => {
@@ -51,6 +66,8 @@ function SentimentIQ() {
       if (response.ok) {
         const data = await response.json();
         setReviews(data.reverse());
+        // Fetch model metrics after new reviews are loaded
+        fetchModelMetrics();
       }
     } catch (error) {
       console.error('Error generating new reviews:', error);
@@ -87,6 +104,27 @@ function SentimentIQ() {
     }
   };
 
+  // Compute average star rating for each aspect from reviews
+  const computeAspectAverages = () => {
+    const aspectSums = {};
+    const aspectCounts = {};
+    reviews.forEach(r => {
+      if (r.message && r.rating && r.aspect) {
+        const aspect = r.aspect;
+        const rating = parseFloat(r.rating);
+        if (!isNaN(rating)) {
+          aspectSums[aspect] = (aspectSums[aspect] || 0) + rating;
+          aspectCounts[aspect] = (aspectCounts[aspect] || 0) + 1;
+        }
+      }
+    });
+    const averages = {};
+    Object.keys(aspectSums).forEach(aspect => {
+      averages[aspect] = aspectSums[aspect] / aspectCounts[aspect];
+    });
+    return averages;
+  };
+
   return (
     <>
     <div style = {{height: "100vh"}}>
@@ -110,6 +148,7 @@ function SentimentIQ() {
           ></textarea>
           <div className="send-icon" style = {{width: "1em", position: "relative", top: "-67px", left: "53%"}} onClick = {analyzeSentiment}/>
 
+<div className = "aspectbar">
           {aspectAnalysis.length > 0 && (
             <div style = {{marginTop: '-40px'}}>
               <h3 style = {{textAlign: "center", fontFamily: "Arial"}}>Aspect Analysis:</h3>
@@ -120,9 +159,9 @@ function SentimentIQ() {
               </div>
             </div>
           )}
-        
         </div>
 
+  </div>
         <div className = "half1">
           <h1 className = "miniheading">Sample Reviews</h1>
 
@@ -144,13 +183,22 @@ function SentimentIQ() {
             </div>
           ) : (
             <div className="reviewbox">
-              <button
-                className="generateReview"
-                onClick={generateNewReviews}
-                disabled={loading}
-              >
-                {loading ? 'Generating...' : 'Generate New Reviews'}
-              </button>
+              <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', width: '100%', justifyContent: 'center', marginBottom: '10px' }}>
+                <button
+                  className="generateReview"
+                  onClick={generateNewReviews}
+                  disabled={loading}
+                >
+                  {loading ? 'Generating...' : 'Generate New Reviews'}
+                </button>
+                <button
+                  className="generateReview"
+                  onClick={() => setShowModelAnalysis(true)}
+                  disabled={!modelMetrics}
+                >
+                  Model Analysis
+                </button>
+              </div>
               <div className="reviews">
                 {loading && reviews.length === 0 &&
                   <div className="loading-bar-placeholder">Waiting for first review...</div>
@@ -170,6 +218,15 @@ function SentimentIQ() {
         </div>
       </div>
     </div>
+    {/* Render ModelAnalysis popup at the root level so it overlays the UI */}
+    {modelMetrics && showModelAnalysis && (
+      <ModelAnalysis
+        metrics={modelMetrics}
+        aspectAverages={modelMetrics.aspect_averages}
+        reviewaspect={modelMetrics.full_report ? modelMetrics.full_report : {}}
+        onClose={() => setShowModelAnalysis(false)}
+      />
+    )}
     </>
   )
 }

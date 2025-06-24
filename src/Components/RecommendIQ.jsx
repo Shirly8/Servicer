@@ -94,8 +94,8 @@ function RecommendIQ() {
     <>
       <div className = "fulll">
         <h1 style = {{fontSize: "45px", textAlign: "center"}}> RecommendIQ</h1>
-        <p style= {{paddingLeft: "5%", paddingRight:"5%", fontSize: "13px"}}>
-        RecommendIQ - Recommendation Engine - Coming Soon - 
+        <p style= {{paddingLeft: "20%", paddingRight:"20%", fontSize: "13px"}}>
+        RecommendIQ, a smart recommendation engine that helps you discover new menu items you'll love. By analyzing your preferences and menu data with collaborative filtering and machine learning, RecommendIQ suggests dishes tailored just for you, making it easy to find your next favorite meal.
         </p>
         
         <div className = "recommendBox">

@@ -1,25 +1,26 @@
 import React from 'react';
 
-const SentimentBar = ({ aspect, score, sentiment }) => {
+const SentimentBar = ({ aspect, score, isStarRating = true }) => {
+  let barFill = 0;
+  let label = "";
 
-
-  // Round the score to 2 decimal places
-  let roundedScore = 0
-
-  if (sentiment == 'Positive') {
-    roundedScore = (score * 100).toFixed(2);
-  }else{
-    roundedScore = (100 - (score * 100)).toFixed(2);
+  if (isStarRating) {
+    // Clamp score between 1 and 5
+    const safeScore = Math.max(1, Math.min(5, score));
+    barFill = (safeScore / 5) * 100;
+    label = `${safeScore}/5`;
+  } else {
+    // Clamp score between 0 and 1
+    const safeScore = Math.max(0, Math.min(1, score));
+    barFill = safeScore * 100;
+    label = `${(safeScore * 100).toFixed(2)}%`;
   }
 
-  // Bar color based on score percentage
-  const barFilledPercentage = `${roundedScore}%`;
-
   return (
-    <div style={{ marginBottom: '15px', borderRadius: '8px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '-30px', marginTop:'15px' }}>
-        <span style={{ color: 'white', marginLeft: '15px' }}>{aspect}</span>
-        <span style={{ color: 'black' }}>{roundedScore} %</span>
+    <div style={{ marginBottom: '15px', borderRadius: '8px', width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '-30px', marginTop:'15px' }}>
+        <span style={{ color: 'black', marginLeft: '15px', marginRight: '10px' }}>{label}</span>
+        <span style={{ color: 'white' }}>{aspect}</span>
       </div>
       <div
         style={{
@@ -32,7 +33,7 @@ const SentimentBar = ({ aspect, score, sentiment }) => {
       >
         <div
           style={{
-            width: barFilledPercentage,
+            width: `${barFill}%`,
             height: '35px',
             backgroundColor: '#436176', // filled color
             borderRadius: '12px',

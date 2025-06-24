@@ -2,7 +2,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipe
 import csv
 import os
 import re
-from .ASPAGeneration import CATEGORY_PHRASES
+from SyntheticGeneration import CATEGORY_PHRASES
 
 # Loading the fine-tuned ABSA model/tokenizer/Classifier
 script_dir = os.path.dirname(__file__)

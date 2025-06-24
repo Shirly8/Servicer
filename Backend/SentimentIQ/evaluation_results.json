@@ -1,0 +1,66 @@
+{
+  "accuracy": 0.8636363636363636,
+  "precision": 0.8958333333333335,
+  "recall": 0.8636363636363636,
+  "f1": 0.8608225108225107,
+  "full_report": {
+    "1": {
+      "precision": 0.875,
+      "recall": 1.0,
+      "f1-score": 0.9333333333333333,
+      "support": 7.0
+    },
+    "2": {
+      "precision": 1.0,
+      "recall": 0.7142857142857143,
+      "f1-score": 0.8333333333333334,
+      "support": 7.0
+    },
+    "3": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1-score": 0.8,
+      "support": 2.0
+    },
+    "4": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1-score": 0.8571428571428571,
+      "support": 3.0
+    },
+    "5": {
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1-score": 0.8,
+      "support": 3.0
+    },
+    "accuracy": 0.8636363636363636,
+    "macro avg": {
+      "precision": 0.8583333333333332,
+      "recall": 0.8761904761904763,
+      "f1-score": 0.8447619047619048,
+      "support": 22.0
+    },
+    "weighted avg": {
+      "precision": 0.8958333333333335,
+      "recall": 0.8636363636363636,
+      "f1-score": 0.8608225108225107,
+      "support": 22.0
+    }
+  },
+  "aspect_averages": {
+    "Value": 3.5,
+    "Service": 2.0,
+    "Menu": 1.0,
+    "Salads": 1.5,
+    "Food Quality": 2.5,
+    "Main": 2.0,
+    "Appetizers": 1.0,
+    "Culture": 3.0,
+    "Drinks": 3.5,
+    "Ambience": 2.5,
+    "Pasta": 3.0,
+    "Location": 3.6666666666666665,
+    "Taste": 2.0
+  }
+}

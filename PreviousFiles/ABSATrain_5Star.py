@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import torch
 import pandas as pd
@@ -105,26 +106,23 @@ class ABSAClassifier(pl.LightningModule):
         return [optimizer], [{'scheduler': scheduler, 'interval': 'step'}]
 
 def main():
-    # Parameters for the training
-    # We start from the original pre-trained ABSA model for a clean slate
-    base_model_name = "yangheng/deberta-v3-base-absa-v1.1" 
-    output_model_name = "5star-absa-v2" # Saving as a new version
+    base_model_name = os.path.join(os.path.dirname(__file__), '5star-absa-v2')
+    output_model_name = "5star-absa-v3" 
     csv_file = os.path.join(os.path.dirname(__file__), 'ASPAGeneratedReviews_5Star_Complex.csv')
     max_length = 128
-    batch_size = 16
-    num_labels = 5 # 1, 2, 3, 4, 5 stars
+    batch_size = 15
+    num_labels = 5 
     learning_rate = 2e-5
-    max_epochs = 5 # Increased epochs for better learning
+    max_epochs = 3
 
     # Load the dataset
-    df = pd.read_csv(csv_file)
-    df = df.rename(columns={"Review": "sentence", "Aspect": "aspect", "Rating": "label"})
-    
-    # Map star ratings (1-5) to labels (0-4)
-    df['label'] = df['label'] - 1
-    
-    df.dropna(subset=['label'], inplace=True)
-    df['label'] = df['label'].astype(int)
+    df = pd.read_csv(csv_file, usecols=[0, 1, 2])
+    df.columns = ["sentence", "aspect", "label"]
+    df['label'] = pd.to_numeric(df['label'], errors='coerce')
+    df.dropna(subset=['sentence', 'aspect', 'label'], inplace=True)
+    df['label'] = df['label'].astype(int) - 1
+    df['sentence'] = df['sentence'].astype(str)
+    df['aspect'] = df['aspect'].astype(str)
 
     # Split the dataset into training and validation sets
     train_df, val_df = train_test_split(df, test_size=0.1, random_state=42)
@@ -133,7 +131,6 @@ def main():
     train_dataset = ABSADataset(train_df, base_model_name, max_length)
     val_dataset = ABSADataset(val_df, base_model_name, max_length)
     
-    # Increase num_workers for faster data loading
     num_workers = 4 if os.name == 'posix' else 0
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, persistent_workers=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, num_workers=num_workers, persistent_workers=True)
@@ -169,10 +166,10 @@ def main():
     save_dir = os.path.join(os.path.dirname(__file__), output_model_name)
     os.makedirs(save_dir, exist_ok=True)
     model.model.save_pretrained(save_dir)
+
     # Save the tokenizer from the base model
     tokenizer = AutoTokenizer.from_pretrained(base_model_name)
     tokenizer.save_pretrained(save_dir)
-    print(f"Fine-tuned 5-star model saved to {save_dir}")
 
 if __name__ == "__main__":
     main()

@@ -104,7 +104,7 @@ class ABSAClassifier(pl.LightningModule):
 def main():
     # Parameters
     model_name = "yangheng/deberta-v3-base-absa-v1.1"
-    csv_file = os.path.join(os.path.dirname(__file__), 'ASPAGeneratedReviews.csv')
+    csv_file = os.path.join(os.path.dirname(__file__), 'SyntheticReviews.csv')
     max_length = 128
     batch_size = 16
     # The base model is trained on 3 labels (negative, neutral, positive). 

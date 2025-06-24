@@ -1,10 +1,15 @@
 import React from 'react';
 import SentimentBar from './SentimentBar';
 import './Components.css';
+import AspectReviewList from './AspectReviewList';
 
-const ModelAnalysis = ({ metrics, reviewaspect, onClose }) => {
-  // Convert the reviewaspect object to an array of [key, value] pairs
-  const aspectEntries = Object.entries(reviewaspect);
+const ModelAnalysis = ({ metrics, aspectAverages, reviewaspect, onClose, allReviews }) => {
+  const [expandedAspect, setExpandedAspect] = React.useState(null);
+
+  // Use aspectAverages if provided, otherwise fall back to reviewaspect
+  const aspectEntries = aspectAverages
+    ? Object.entries(aspectAverages)
+    : Object.entries(reviewaspect);
 
   return (
     <div className="model-analysis-popup">
@@ -31,13 +36,19 @@ const ModelAnalysis = ({ metrics, reviewaspect, onClose }) => {
           </div>
         </div>
 
-
         <h2 style = {{"backgroundColor": "#436176"}}>Restaurant Overall Sentiment</h2>
 
-          {/* Render Sentiment Bars for each aspect */}
-          <div className="sentimentBars">
+        {/* Render Sentiment Bars for each aspect average */}
+        <div className="sentimentBars">
           {aspectEntries.map(([aspect, score], index) => (
-            <SentimentBar key={index} aspect={aspect} score={score} sentiment={score >= 0.5 ? 'Positive' : 'Negative'} />
+            <div key={index}>
+              <div onClick={() => setExpandedAspect(expandedAspect === aspect ? null : aspect)}>
+                <SentimentBar aspect={aspect} score={Number(score).toFixed(2)} isStarRating={true} />
+              </div>
+              {expandedAspect === aspect && (
+                <AspectReviewList aspect={aspect} allReviews={allReviews} />
+              )}
+            </div>
           ))}
         </div>
 

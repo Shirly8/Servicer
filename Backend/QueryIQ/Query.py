@@ -18,14 +18,14 @@ def query_rag(query_text):
     results = db.similarity_search_with_score(query_text, k=5)
 
     #Initialize Ollama to get the answer
-    llm = Ollama(model = "llama3")
+    llm = Ollama(model = "llama3:8b")
 
     #combine all the chunks and pass it to Ollama
     all_context = "\n".join([doc.page_content for doc, score in results])
 
     #Create a prompt for Ollama
     prompt_template = ChatPromptTemplate.from_template(
-        f"You are an intelligent customer service agent for Aretti, a 3 Michelin Star Restaurant in Toronto. Provide the best customer service answering to the queries, Be specific. Be relevant. Keep it conscise\n" 
+        f"You are an intelligent customer service agent for Aretti, a 2 Michelin Star Restaurant in Toronto. Provide the best customer service answering to the queries, Be specific. Be relevant. Keep it very concise and to the point. \n" 
         f"This is the query: {query_text}.\n"
         f"This is the context: {all_context}"
     )
